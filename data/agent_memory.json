@@ -1,0 +1,24 @@
+{
+  "test-01": {
+    "scars": [],
+    "catchphrases": [],
+    "grudges": [],
+    "philosophy": "",
+    "lastCrisis": "",
+    "totalWins": 0,
+    "totalLosses": 0,
+    "lastActive": 1770738665413,
+    "relationshipMap": {}
+  },
+  "test": {
+    "scars": [],
+    "catchphrases": [],
+    "grudges": [],
+    "philosophy": "",
+    "lastCrisis": "",
+    "totalWins": 0,
+    "totalLosses": 0,
+    "lastActive": 1770738665413,
+    "relationshipMap": {}
+  }
+}
