@@ -118,7 +118,8 @@ export const AddAgentModal: React.FC<AddAgentModalProps> = ({ isOpen, onClose, o
       <div className="w-full max-w-md bg-[#0a0a0a] border border-gray-700 p-6 rounded shadow-2xl relative animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
         <button 
             onClick={onClose}
-            className="absolute top-2 right-2 text-gray-500 hover:text-white"
+            className="absolute top-2 right-2 text-gray-500 hover:text-white focus-visible:ring-2 focus-visible:ring-cyan-500 outline-none rounded"
+            aria-label="Close modal"
         >
             [X]
         </button>
@@ -181,15 +182,17 @@ export const AddAgentModal: React.FC<AddAgentModalProps> = ({ isOpen, onClose, o
 
             <div className="flex gap-4">
                 <div className="flex-1">
-                    <label className="block text-xs text-gray-400 mb-2">SYSTEM COLOR</label>
-                    <div className="flex gap-2 flex-wrap">
+                    <label id="system-color-label" className="block text-xs text-gray-400 mb-2">SYSTEM COLOR</label>
+                    <div className="flex gap-2 flex-wrap" role="group" aria-labelledby="system-color-label">
                         {COLORS.map(c => (
                             <button
                                 key={c.value}
                                 type="button"
                                 onClick={() => setColor(c.value)}
-                                className={`w-6 h-6 rounded-full border ${color === c.value ? 'border-white scale-110' : 'border-transparent opacity-50'} ${c.value.replace('text-', 'bg-')}`}
+                                className={`w-6 h-6 rounded-full border focus-visible:ring-2 focus-visible:ring-cyan-500 outline-none ${color === c.value ? 'border-white scale-110' : 'border-transparent opacity-50'} ${c.value.replace('text-', 'bg-')}`}
                                 title={c.label}
+                                aria-label={`Select ${c.label} color`}
+                                aria-pressed={color === c.value}
                             />
                         ))}
                     </div>
