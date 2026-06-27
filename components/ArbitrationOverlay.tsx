@@ -41,9 +41,9 @@ export const ArbitrationOverlay: React.FC<ArbitrationOverlayProps> = ({ resoluti
             </div>
 
             <div className="bg-gray-900/50 border border-gray-800 p-4 w-full mb-6">
-                <div className="text-xs text-gray-400 mb-1 text-left">>> EXECUTING SYSTEM ACTION:</div>
+                <div className="text-xs text-gray-400 mb-1 text-left">{">> EXECUTING SYSTEM ACTION:"}</div>
                 <div className="text-green-500 font-bold text-lg leading-tight typewriter text-left">
-                    > {resolution.action}
+                    {"> "}{resolution.action}
                 </div>
             </div>
 
