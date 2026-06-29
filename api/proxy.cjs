@@ -1286,7 +1286,17 @@ const server = http.createServer((req, res) => {
   // Static assets (JS/CSS)
   if (req.url.startsWith('/assets/')) {
     try {
-      const filePath = path.join(__dirname, '..', 'dist', req.url);
+      const reqPath = decodeURIComponent(req.url.split('?')[0]);
+      const distDir = path.resolve(__dirname, '..', 'dist');
+      const filePath = path.normalize(path.join(distDir, reqPath));
+
+      // Prevent path traversal outside the dist directory
+      if (!filePath.startsWith(distDir + path.sep) && filePath !== distDir) {
+        res.writeHead(403);
+        res.end('Forbidden');
+        return;
+      }
+
       const ext = path.extname(filePath);
       const contentType = ext === '.js' ? 'application/javascript' : 
                          ext === '.css' ? 'text/css' : 'application/octet-stream';
