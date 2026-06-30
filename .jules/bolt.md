@@ -1,0 +1,3 @@
+## 2024-05-18 - Unnecessary Array Mapping Triggers Unnecessary Re-renders
+**Learning:** Using `prev.map(...)` inside a `setInterval` unconditionally creates a new array reference every tick, even if no underlying values change. In a React application, this triggers an unnecessary re-render of components subscribed to that state, and due to `useEffect` dependencies, triggers unnecessary `localStorage.setItem` calls on every tick.
+**Action:** When updating arrays in intervals or rapid events, iterate with a `hasChanges` flag. If no items were modified, return the `prev` array reference to break the React rendering and effect chain.
