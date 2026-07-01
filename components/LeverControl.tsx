@@ -30,9 +30,13 @@ export const LeverControl: React.FC<LeverControlProps> = ({
           {isAutoMode ? 'LOOP ACTIVE' : 'SINGLE RUN'}
         </span>
         <button
+          role="switch"
+          aria-checked={isAutoMode}
+          aria-label="Toggle Eternal Mode (Auto-Crunch)"
           onClick={() => onToggleAuto(!isAutoMode)}
           className={`
             w-16 h-8 rounded-full border-2 relative transition-all duration-300
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900
             ${isAutoMode ? 'bg-red-900/50 border-red-500' : 'bg-gray-900 border-gray-700'}
           `}
         >
