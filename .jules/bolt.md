@@ -1,0 +1,3 @@
+## 2023-10-27 - Unconditional Map Generation in SetInterval
+**Learning:** React state setters using intervals (`setInterval`) can cause significant performance degradation when unconditionally returning new object/array references (e.g. via `.map()`), as it triggers unnecessary re-renders and side-effects (like disk I/O from localStorage writes) even when underlying values haven't changed.
+**Action:** Always implement a `hasChanges` flag or similar delta-check when mapping state updates in high-frequency intervals. If no changes occur, explicitly return the previous state reference to safely bypass React's render lifecycle.
