@@ -1,0 +1,4 @@
+## 2025-03-09 - Prevent path traversal when serving static files
+**Vulnerability:** Serving static assets based on `req.url` directly using `path.join` allowed directory traversal, enabling attackers to read sensitive files outside of the `dist` directory by passing strings like `/assets/../../api/.env`.
+**Learning:** `path.join` alone does not secure against directory traversal since it will resolve `..` sequences relative to the requested directory, resulting in accessing paths outside the root directory.
+**Prevention:** Validate resolved paths securely by explicitly decoding `req.url` with `decodeURIComponent`, resolving the absolute base directory via `path.resolve` and comparing if the generated `path.normalize(path.join(basePath, decodedUrl))` starts with `basePath + path.sep` to restrict access inside `dist/`.
