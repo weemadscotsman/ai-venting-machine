@@ -1,0 +1,3 @@
+## 2025-03-08 - Accessible Switch Controls
+**Learning:** Custom UI toggle controls in dark-themed applications often lack critical screen reader support and visible focus states, making them difficult to use for keyboard navigators and visually impaired users.
+**Action:** When implementing custom toggle/switch controls, ensure they include `role="switch"`, `aria-checked`, `aria-label`, and explicit focus-visible styling that contrasts well with dark backgrounds (e.g., `focus-visible:ring-cyan-500`).
