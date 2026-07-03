@@ -1,0 +1,3 @@
+## 2024-07-03 - LeverControl Switch Accessibility
+**Learning:** Custom toggle buttons built with generic elements (`<button>` or `<div>`) lack native semantic meaning for screen readers. In a dark-themed application like the AI Venting Machine, relying solely on custom CSS for focus states often fails to provide sufficient contrast and visibility for keyboard users.
+**Action:** Always apply `role="switch"` and bind `aria-checked` to the active state for custom toggles. Consistently use explicit Tailwind `focus-visible` utilities (e.g., `focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900`) to ensure high-contrast, keyboard-navigable focus rings against dark backgrounds.
