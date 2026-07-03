@@ -1,0 +1,4 @@
+## 2026-07-03 - Path Traversal Vulnerability in Static Asset Serving
+**Vulnerability:** A critical path traversal vulnerability existed in `api/proxy.cjs` where `req.url` was directly concatenated to serve static assets, allowing access to arbitrary files via `../` sequences and URL-encoded variants (e.g. `%2e%2e/%2e%2e/etc/passwd`).
+**Learning:** Naive concatenation of user input with base directories is insufficient for static file serving. Attackers can bypass simple prefix checks if the underlying path resolution allows navigating upwards out of the intended directory.
+**Prevention:** Always validate file paths by first decoding user input, resolving it into an absolute path, and strictly ensuring that the resulting absolute path begins exactly with the intended base directory path (including the trailing path separator).

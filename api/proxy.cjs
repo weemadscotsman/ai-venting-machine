@@ -1286,7 +1286,18 @@ const server = http.createServer((req, res) => {
   // Static assets (JS/CSS)
   if (req.url.startsWith('/assets/')) {
     try {
-      const filePath = path.join(__dirname, '..', 'dist', req.url);
+      const decodedUrl = decodeURIComponent(req.url);
+      const basePath = path.resolve(__dirname, '..', 'dist');
+      // Prepend '.' so that path.resolve treats decodedUrl as relative to basePath, not root
+      const filePath = path.normalize(path.resolve(basePath, '.' + decodedUrl));
+
+      if (!filePath.startsWith(basePath + path.sep)) {
+        console.warn(`[Security] Path traversal attempt blocked: ${req.url}`);
+        res.writeHead(403);
+        res.end('Forbidden');
+        return;
+      }
+
       const ext = path.extname(filePath);
       const contentType = ext === '.js' ? 'application/javascript' : 
                          ext === '.css' ? 'text/css' : 'application/octet-stream';
