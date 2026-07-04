@@ -1,0 +1,3 @@
+## 2025-02-28 - Custom Switch Accessibility in Dark Themes
+**Learning:** Custom UI toggle switches often lack semantic meaning (like `role="switch"`) and clear focus states, especially in dark-themed applications where standard focus rings might not provide sufficient contrast.
+**Action:** When implementing custom toggle controls, always ensure `role="switch"`, `aria-checked`, and `aria-label` are present. Furthermore, apply explicit `focus-visible` utility classes (e.g., `focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-gray-900`) to guarantee keyboard navigation remains visible and distinct against dark backgrounds.
