@@ -168,15 +168,22 @@ const App: React.FC = () => {
   useEffect(() => {
     const decayInterval = setInterval(() => {
         if (machineState !== MachineState.PLAYING_SESSION && machineState !== MachineState.GENERATING_SCRIPT) {
-            setAgents(prev => prev.map(a => {
-                if (a.stressLevel <= 10) return a;
-                const decayAmount = a.stressLevel > 70 ? 1.5 : 0.5;
-                const newStress = Math.max(0, a.stressLevel - decayAmount);
-                let newStatus = a.status;
-                if (newStress < 60 && a.status === 'CONFLICT') newStatus = 'STABLE';
-                if (newStress < 85 && a.status === 'CRITICAL') newStatus = 'CONFLICT';
-                return { ...a, stressLevel: newStress, status: newStatus as any };
-            }));
+            // ⚡ Bolt Optimization: Prevent unnecessary re-renders and localStorage writes
+            // by only updating the agents array reference if an actual decay occurred.
+            setAgents(prev => {
+                let hasChanges = false;
+                const newAgents = prev.map(a => {
+                    if (a.stressLevel <= 10) return a;
+                    hasChanges = true;
+                    const decayAmount = a.stressLevel > 70 ? 1.5 : 0.5;
+                    const newStress = Math.max(0, a.stressLevel - decayAmount);
+                    let newStatus = a.status;
+                    if (newStress < 60 && a.status === 'CONFLICT') newStatus = 'STABLE';
+                    if (newStress < 85 && a.status === 'CRITICAL') newStatus = 'CONFLICT';
+                    return { ...a, stressLevel: newStress, status: newStatus as any };
+                });
+                return hasChanges ? newAgents : prev;
+            });
         }
     }, 3000);
     return () => clearInterval(decayInterval);
