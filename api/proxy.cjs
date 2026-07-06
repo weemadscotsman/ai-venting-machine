@@ -1286,7 +1286,18 @@ const server = http.createServer((req, res) => {
   // Static assets (JS/CSS)
   if (req.url.startsWith('/assets/')) {
     try {
-      const filePath = path.join(__dirname, '..', 'dist', req.url);
+      // 🛡️ Sentinel: Fix path traversal vulnerability
+      // Decode URL, prepend '.', resolve absolute path, and enforce it is within dist/ directory
+      const basePath = path.resolve(__dirname, '..', 'dist');
+      const decodedUrl = decodeURIComponent(req.url);
+      const filePath = path.resolve(basePath, '.' + decodedUrl);
+
+      if (!filePath.startsWith(basePath + path.sep)) {
+        res.writeHead(403);
+        res.end('Forbidden');
+        return;
+      }
+
       const ext = path.extname(filePath);
       const contentType = ext === '.js' ? 'application/javascript' : 
                          ext === '.css' ? 'text/css' : 'application/octet-stream';
