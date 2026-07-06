@@ -1,0 +1,3 @@
+## 2024-07-06 - Custom Toggle Switch Accessibility
+**Learning:** Custom UI toggle controls implemented as `button` elements (like the Eternal Mode switch in this app) lack implicit semantics and fail to convey their state or purpose to screen readers if not properly annotated. Furthermore, custom focus states must be explicitly provided (especially against dark backgrounds) since default browser focus rings are often stripped or invisible.
+**Action:** Always add `role="switch"`, an `aria-label`, and dynamic `aria-checked` attributes to custom toggle components. Ensure explicit `focus-visible` utility classes are applied for keyboard accessibility.
