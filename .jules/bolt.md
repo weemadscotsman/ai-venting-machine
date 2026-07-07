@@ -1,0 +1,3 @@
+## 2025-03-09 - Avoid Unconditional Array Mutations in React Intervals
+**Learning:** Returning a new array reference inside an interval's `setState(prev => prev.map(...))` triggers an unconditional React re-render AND dependent `useEffect` side-effects (like heavy `localStorage` writes), even when the array's underlying data did not actually change. In applications with many periodic state checks (like a decaying stress gauge in `App.tsx`), this causes massive overhead and frame drops.
+**Action:** When updating arrays or objects inside an interval, iterate using a `hasChanges` flag. Only return the modified structure (`newAgents`) if `hasChanges` is true; otherwise, return the exact `prev` reference to skip the render cycle and dependent side-effects entirely.
