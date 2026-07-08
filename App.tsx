@@ -552,7 +552,7 @@ const App: React.FC = () => {
            {/* SETTINGS BUTTON */}
            <button 
               onClick={() => setIsSettingsModalOpen(true)}
-              className="group flex flex-col items-center justify-center p-2 border border-gray-800 bg-gray-900/50 hover:bg-gray-800 hover:border-cyan-500 transition-all rounded w-12 h-12 md:w-16 md:h-14"
+              aria-label="Open settings configuration" className="group flex flex-col items-center justify-center p-2 border border-gray-800 bg-gray-900/50 hover:bg-gray-800 hover:border-cyan-500 transition-all rounded w-12 h-12 md:w-16 md:h-14 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
               title="Configure LLM Provider"
            >
               <span className="text-lg group-hover:text-cyan-400 group-hover:animate-spin">⚙</span>
@@ -574,7 +574,7 @@ const App: React.FC = () => {
              <h3 className="text-xs text-gray-500 uppercase font-bold tracking-wider">Neural Staff</h3>
              <button 
                 onClick={() => setIsAgentModalOpen(true)}
-                className="text-[10px] text-cyan-500 border border-cyan-900 px-2 py-0.5 rounded hover:bg-cyan-900/30 uppercase transition-colors"
+                aria-label="Hire new custom agent" className="text-[10px] text-cyan-500 border border-cyan-900 px-2 py-0.5 rounded hover:bg-cyan-900/30 uppercase transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
              >
                 + Hire
              </button>
