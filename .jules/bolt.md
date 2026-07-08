@@ -1,0 +1,3 @@
+## 2024-07-08 - Prevent Unnecessary Re-renders and Disk I/O in React State Setters Within Intervals
+**Learning:** Returning a new array reference unconditionally from a React state setter inside a `setInterval` loop (e.g., using `.map()`) can cause continuous unnecessary component re-renders and excessive disk I/O if the state is tied to an effect writing to `localStorage`.
+**Action:** When updating arrays in intervals, always iterate with a `hasChanges` flag. Only return the newly mapped array if values were actually modified; otherwise, return the previous array reference to skip re-rendering and side-effects.
