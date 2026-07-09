@@ -1,0 +1,3 @@
+## 2025-03-05 - Avoid Unconditional Array Creation in Interval State Updates
+**Learning:** Unconditionally returning new array references (e.g., via `.map()`) in a React state updater function during intervals triggers frequent re-renders and cascading side-effects like disk I/O (via `useEffect` watching the array state), even if the array element contents haven't actually changed.
+**Action:** When updating arrays inside intervals, always use a `hasChanges` flag to track if actual data mutations occurred. If no values changed, return the previous array reference (`prev`) to allow React to bail out of the re-render and prevent unnecessary side-effects.
