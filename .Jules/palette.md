@@ -1,0 +1,3 @@
+## 2024-07-09 - Accessible Custom Switches in Dark Mode
+**Learning:** Custom UI toggle/switch controls (like the 'Eternal Mode' toggle) require `role="switch"`, `aria-checked`, and `aria-label` for screen reader accessibility. Additionally, explicit focus-visible utilities are needed to ensure keyboard navigation is visible against a dark background.
+**Action:** When implementing custom interactive UI elements, always include ARIA roles and labels, and explicitly add `focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900` to ensure keyboard focus states are accessible and visible.
