@@ -1,0 +1,4 @@
+## 2026-07-10 - Path Traversal Vulnerability in Static File Server
+**Vulnerability:** The proxy server (`api/proxy.cjs`) directly concatenated `req.url` with the base directory path without decoding and properly resolving the path, allowing path traversal (e.g., `/assets/../../etc/passwd`).
+**Learning:** `path.join` alone is not sufficient to prevent path traversal when the input contains relative path markers like `../`. Without boundary validation, sensitive system files can be exposed.
+**Prevention:** Always decode the URL (`decodeURIComponent`), safely concatenate with a base path by prepending `.` to the user-provided path (e.g., `path.resolve(basePath, '.' + decodedUrl)`), and explicitly validate that the resolved path starts with the intended base directory (e.g., `.startsWith(basePath + path.sep)`).
