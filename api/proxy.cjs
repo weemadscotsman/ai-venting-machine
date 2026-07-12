@@ -1286,7 +1286,19 @@ const server = http.createServer((req, res) => {
   // Static assets (JS/CSS)
   if (req.url.startsWith('/assets/')) {
     try {
-      const filePath = path.join(__dirname, '..', 'dist', req.url);
+      // 🛡️ Sentinel: Fix Critical Path Traversal Vulnerability
+      // Decode URL, resolve absolute path safely and enforce boundary checks
+      const basePath = path.normalize(path.resolve(__dirname, '..', 'dist'));
+      const decodedUrl = decodeURIComponent(req.url);
+      const filePath = path.normalize(path.resolve(basePath, '.' + decodedUrl));
+
+      // Ensure the resolved path strictly falls within the target base directory
+      if (!filePath.startsWith(basePath + path.sep)) {
+        res.writeHead(403);
+        res.end('Forbidden');
+        return;
+      }
+
       const ext = path.extname(filePath);
       const contentType = ext === '.js' ? 'application/javascript' : 
                          ext === '.css' ? 'text/css' : 'application/octet-stream';
