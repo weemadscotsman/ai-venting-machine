@@ -1,0 +1,3 @@
+## 2024-07-12 - Accessible Custom Toggles in Dark UI
+**Learning:** Custom toggle buttons/switches in dark-themed UIs often lack adequate visual feedback for keyboard users when relying solely on default outlines. Additionally, custom elements replacing semantic inputs often lack the necessary ARIA attributes to correctly convey their role and state to screen readers.
+**Action:** When creating custom switches or interactive elements, explicitly add `role="switch"` (or the appropriate role), `aria-checked` (for toggle states), and `aria-labelledby`/`aria-label` for semantic meaning. Also, apply strong `focus-visible` ring styling with appropriate offset colors to ensure the focus state is clearly visible against the dark background.
