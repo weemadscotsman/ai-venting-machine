@@ -1,0 +1,3 @@
+## 2025-03-08 - Unnecessary React State Array Generation Triggering Redundant Disk I/O
+**Learning:** Frequent `.map()` calls in `setInterval` inside state updaters generate new array references even when logic produces no actual mutations. This codebase frequently maps this array to localStorage in an accompanying `useEffect`, turning useless array references into a severe synchronous Disk I/O and re-render bottleneck every few seconds.
+**Action:** When updating arrays in periodic state updates, explicitly track a boolean mutation flag during the `.map()` loop and conditionally return the previous array reference if no values changed, rather than unconditionally returning the new mapped array.
