@@ -1,0 +1,4 @@
+## 2026-07-12 - Critical Path Traversal Vulnerability in Proxy Server
+**Vulnerability:** The proxy server's static file handler (`api/proxy.cjs`) under `/assets/` used `path.join(__dirname, '..', 'dist', req.url)` without proper bounds checking or URL decoding, allowing directory traversal attacks to access unauthorized files like `/etc/passwd`.
+**Learning:** Naively using `path.join` with user-supplied URLs does not prevent path traversal (e.g. `../../`), nor does it handle URL encoded paths.
+**Prevention:** Always decode the URL using `decodeURIComponent`, prepend a `.` to the requested path before using `path.resolve` to prevent absolute paths from being evaluated relative to the root directory, normalize the result, and explicitly validate that the resolved path begins with the intended base directory including a path separator (e.g., `filePath.startsWith(basePath + path.sep)`).
