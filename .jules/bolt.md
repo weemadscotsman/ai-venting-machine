@@ -1,0 +1,3 @@
+## 2024-05-24 - Unnecessary Object Mutation in Interval Setters
+**Learning:** Using `.map()` unconditionally inside an interval's `setState` always creates a new array reference, even if the elements within don't conceptually change. In React, this forces unnecessary re-renders. Furthermore, since this state is tied to `localStorage` sync via `useEffect`, it causes continuous, redundant disk I/O when the application is idle.
+**Action:** When updating collections in an interval, maintain a `hasChanges` flag during iteration. Only return the newly mapped array if a change actually occurred; otherwise, return the previous array reference to skip re-rendering and side-effects.
