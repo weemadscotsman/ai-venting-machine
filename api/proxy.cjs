@@ -1286,7 +1286,19 @@ const server = http.createServer((req, res) => {
   // Static assets (JS/CSS)
   if (req.url.startsWith('/assets/')) {
     try {
-      const filePath = path.join(__dirname, '..', 'dist', req.url);
+      // Decode URL and resolve path securely to prevent path traversal
+      const decodedUrl = decodeURIComponent(req.url);
+      const basePath = path.resolve(__dirname, '..', 'dist');
+      // Append '.' so that a leading slash isn't treated as an absolute path
+      const filePath = path.normalize(path.resolve(basePath, '.' + decodedUrl));
+
+      // Ensure the resolved path is within the intended base directory
+      if (!filePath.startsWith(basePath + path.sep)) {
+        res.writeHead(403);
+        res.end('Forbidden');
+        return;
+      }
+
       const ext = path.extname(filePath);
       const contentType = ext === '.js' ? 'application/javascript' : 
                          ext === '.css' ? 'text/css' : 'application/octet-stream';
