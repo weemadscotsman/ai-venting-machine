@@ -1,0 +1,3 @@
+## 2024-05-24 - Custom Toggle Switch Accessibility
+**Learning:** Custom UI toggle controls in dark-themed applications often lack inherent accessibility features, requiring manual addition of ARIA roles (`role="switch"`), state attributes (`aria-checked`), and explicit high-contrast focus indicators (`focus-visible`) to be usable by screen readers and keyboard navigators.
+**Action:** When implementing or modifying custom toggle controls, always explicitly define `role="switch"`, wire `aria-checked` to the state, and use explicit `focus-visible` utilities with offsets (e.g., `focus-visible:ring-offset-gray-900`) to ensure focus states are clearly visible against dark backgrounds.
