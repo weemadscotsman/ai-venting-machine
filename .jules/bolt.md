@@ -1,0 +1,3 @@
+## 2024-06-03 - Prevent disk I/O in React Intervals
+**Learning:** Unconditionally returning a newly mapped array (via `.map()`) within an interval inside a React `setState` hook causes the array reference to change. If there is a `useEffect` hooked into this state that performs disk I/O (like writing to `localStorage`), it triggers constant, unnecessary writes even if the underlying data hasn't changed.
+**Action:** When updating state arrays inside intervals, always use a `hasChanges` flag during iteration. Only return the newly mapped array if a change actually occurred; otherwise, return the original array reference (`prev`) to prevent React from re-rendering and triggering side-effects.

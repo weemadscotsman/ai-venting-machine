@@ -168,15 +168,26 @@ const App: React.FC = () => {
   useEffect(() => {
     const decayInterval = setInterval(() => {
         if (machineState !== MachineState.PLAYING_SESSION && machineState !== MachineState.GENERATING_SCRIPT) {
-            setAgents(prev => prev.map(a => {
-                if (a.stressLevel <= 10) return a;
-                const decayAmount = a.stressLevel > 70 ? 1.5 : 0.5;
-                const newStress = Math.max(0, a.stressLevel - decayAmount);
-                let newStatus = a.status;
-                if (newStress < 60 && a.status === 'CONFLICT') newStatus = 'STABLE';
-                if (newStress < 85 && a.status === 'CRITICAL') newStatus = 'CONFLICT';
-                return { ...a, stressLevel: newStress, status: newStatus as any };
-            }));
+            setAgents(prev => {
+                let hasChanges = false;
+                const next = prev.map(a => {
+                    if (a.stressLevel <= 10) return a;
+                    const decayAmount = a.stressLevel > 70 ? 1.5 : 0.5;
+                    const newStress = Math.max(0, a.stressLevel - decayAmount);
+                    let newStatus = a.status;
+                    if (newStress < 60 && a.status === 'CONFLICT') newStatus = 'STABLE';
+                    if (newStress < 85 && a.status === 'CRITICAL') newStatus = 'CONFLICT';
+
+                    if (newStress !== a.stressLevel || newStatus !== a.status) {
+                        hasChanges = true;
+                        // ⚡ Bolt: Prevent returning a new reference if stress level or status didn't change
+                        return { ...a, stressLevel: newStress, status: newStatus as any };
+                    }
+                    return a;
+                });
+                // ⚡ Bolt: Return exact prev reference if no values changed to avoid triggering unnecessary re-renders and disk I/O (localStorage writes)
+                return hasChanges ? next : prev;
+            });
         }
     }, 3000);
     return () => clearInterval(decayInterval);
