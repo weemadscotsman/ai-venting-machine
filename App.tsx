@@ -168,15 +168,27 @@ const App: React.FC = () => {
   useEffect(() => {
     const decayInterval = setInterval(() => {
         if (machineState !== MachineState.PLAYING_SESSION && machineState !== MachineState.GENERATING_SCRIPT) {
-            setAgents(prev => prev.map(a => {
-                if (a.stressLevel <= 10) return a;
-                const decayAmount = a.stressLevel > 70 ? 1.5 : 0.5;
-                const newStress = Math.max(0, a.stressLevel - decayAmount);
-                let newStatus = a.status;
-                if (newStress < 60 && a.status === 'CONFLICT') newStatus = 'STABLE';
-                if (newStress < 85 && a.status === 'CRITICAL') newStatus = 'CONFLICT';
-                return { ...a, stressLevel: newStress, status: newStatus as any };
-            }));
+            // OPTIMIZATION: Track changes to prevent unnecessary array reference changes
+            // Unconditional new array references in setState during intervals cause React re-renders
+            // even if logical state hasn't changed.
+            setAgents(prev => {
+                let hasChanges = false;
+                const next = prev.map(a => {
+                    if (a.stressLevel <= 10) return a;
+                    const decayAmount = a.stressLevel > 70 ? 1.5 : 0.5;
+                    const newStress = Math.max(0, a.stressLevel - decayAmount);
+                    let newStatus = a.status;
+                    if (newStress < 60 && a.status === 'CONFLICT') newStatus = 'STABLE';
+                    if (newStress < 85 && a.status === 'CRITICAL') newStatus = 'CONFLICT';
+
+                    if (newStress !== a.stressLevel || newStatus !== a.status) {
+                        hasChanges = true;
+                        return { ...a, stressLevel: newStress, status: newStatus };
+                    }
+                    return a;
+                });
+                return hasChanges ? next : prev;
+            });
         }
     }, 3000);
     return () => clearInterval(decayInterval);
@@ -290,7 +302,8 @@ const App: React.FC = () => {
 
   const applyStressToAgents = (script: VentMessage[]) => {
       setAgents(prevAgents => {
-          return prevAgents.map(agent => {
+          let hasChanges = false;
+          const next = prevAgents.map(agent => {
               const messageCount = script.filter(m => m.agentId === agent.id).length;
               if (messageCount === 0) return agent; 
               const stressIncrease = messageCount * 5; 
@@ -299,8 +312,14 @@ const App: React.FC = () => {
               if (newStress > 90) newStatus = 'CRITICAL';
               else if (newStress > 60) newStatus = 'CONFLICT';
               else newStatus = 'STABLE';
-              return { ...agent, stressLevel: newStress, status: newStatus };
+
+              if (newStress !== agent.stressLevel || newStatus !== agent.status) {
+                  hasChanges = true;
+                  return { ...agent, stressLevel: newStress, status: newStatus };
+              }
+              return agent;
           });
+          return hasChanges ? next : prevAgents;
       });
   };
 
