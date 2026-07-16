@@ -30,9 +30,12 @@ export const LeverControl: React.FC<LeverControlProps> = ({
           {isAutoMode ? 'LOOP ACTIVE' : 'SINGLE RUN'}
         </span>
         <button
+          role="switch"
+          aria-checked={isAutoMode}
+          aria-label="Eternal mode"
           onClick={() => onToggleAuto(!isAutoMode)}
           className={`
-            w-16 h-8 rounded-full border-2 relative transition-all duration-300
+            w-16 h-8 rounded-full border-2 relative transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900
             ${isAutoMode ? 'bg-red-900/50 border-red-500' : 'bg-gray-900 border-gray-700'}
           `}
         >
@@ -56,7 +59,7 @@ export const LeverControl: React.FC<LeverControlProps> = ({
           className={`
             relative w-full h-full uppercase font-bold tracking-widest text-2xl
             border-4 transition-all duration-100 active:scale-95 flex items-center justify-center
-            shadow-[0_0_20px_rgba(0,0,0,0.5)] z-10 overflow-hidden
+            shadow-[0_0_20px_rgba(0,0,0,0.5)] z-10 overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900
             ${disabled || isAutoMode
               ? 'bg-gray-800 border-gray-700 text-gray-500 cursor-not-allowed' 
               : 'bg-red-700 border-red-900 text-white hover:bg-red-600 hover:border-red-500 hover:shadow-[0_0_30px_rgba(220,38,38,0.5)]'
@@ -94,7 +97,7 @@ export const LeverControl: React.FC<LeverControlProps> = ({
             disabled={!canContinue || disabled || isAutoMode}
             className={`
               w-full h-full uppercase font-bold text-sm tracking-wider
-              border-4 transition-all duration-100 flex flex-col items-center justify-center gap-1
+              border-4 transition-all duration-100 flex flex-col items-center justify-center gap-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900
               ${!canContinue || disabled || isAutoMode
                 ? 'bg-gray-900 border-gray-800 text-gray-600 cursor-not-allowed'
                 : 'bg-amber-700 border-amber-600 text-white hover:bg-amber-600 active:scale-95 shadow-[0_0_15px_rgba(245,158,11,0.3)]'
