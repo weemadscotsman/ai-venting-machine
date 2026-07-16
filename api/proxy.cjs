@@ -13,6 +13,7 @@ const https = require('https');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
+const { resolveStaticAssetPath } = require('./safe-static-path.cjs');
 
 const CONFIG = {
   PORT: process.env.PORT || 3002,
@@ -1286,9 +1287,12 @@ const server = http.createServer((req, res) => {
   // Static assets (JS/CSS)
   if (req.url.startsWith('/assets/')) {
     try {
-      const filePath = path.join(__dirname, '..', 'dist', req.url);
+      const filePath = resolveStaticAssetPath(
+        path.resolve(__dirname, '..', 'dist'),
+        req.url
+      );
       const ext = path.extname(filePath);
-      const contentType = ext === '.js' ? 'application/javascript' : 
+      const contentType = ext === '.js' ? 'application/javascript' :
                          ext === '.css' ? 'text/css' : 'application/octet-stream';
       const content = fs.readFileSync(filePath);
       res.setHeader('Content-Type', contentType);
@@ -1296,12 +1300,20 @@ const server = http.createServer((req, res) => {
       res.end(content);
       return;
     } catch (e) {
-      res.writeHead(404);
-      res.end('Not found');
+      if (e.code === 'FORBIDDEN') {
+        res.writeHead(403);
+        res.end('Forbidden');
+      } else if (e.code === 'BAD_REQUEST') {
+        res.writeHead(400);
+        res.end('Bad request');
+      } else {
+        res.writeHead(404);
+        res.end('Not found');
+      }
       return;
     }
   }
-  
+
   // Health check
   if (req.url === '/health') {
     res.writeHead(200);
