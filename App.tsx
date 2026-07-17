@@ -570,11 +570,12 @@ const App: React.FC = () => {
         <div className="w-full md:w-auto mt-2 md:mt-0 flex items-center gap-4">
            {/* SETTINGS BUTTON */}
            <button 
+              aria-label="Configure Settings"
               onClick={() => setIsSettingsModalOpen(true)}
-              className="group flex flex-col items-center justify-center p-2 border border-gray-800 bg-gray-900/50 hover:bg-gray-800 hover:border-cyan-500 transition-all rounded w-12 h-12 md:w-16 md:h-14"
+              className="group flex flex-col items-center justify-center p-2 border border-gray-800 bg-gray-900/50 hover:bg-gray-800 hover:border-cyan-500 transition-all rounded w-12 h-12 md:w-16 md:h-14 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
               title="Configure LLM Provider"
            >
-              <span className="text-lg group-hover:text-cyan-400 group-hover:animate-spin">⚙</span>
+              <span aria-hidden="true" className="text-lg group-hover:text-cyan-400 group-hover:animate-spin">⚙</span>
               <span className="text-[9px] text-gray-500 uppercase mt-1 group-hover:text-cyan-400 hidden md:block">Config</span>
            </button>
 
@@ -592,8 +593,9 @@ const App: React.FC = () => {
            <div className="flex-none p-2 border-b border-gray-800 flex justify-between items-center bg-gray-900/50">
              <h3 className="text-xs text-gray-500 uppercase font-bold tracking-wider">Neural Staff</h3>
              <button 
+                aria-label="Hire new neural staff agent"
                 onClick={() => setIsAgentModalOpen(true)}
-                className="text-[10px] text-cyan-500 border border-cyan-900 px-2 py-0.5 rounded hover:bg-cyan-900/30 uppercase transition-colors"
+                className="text-[10px] text-cyan-500 border border-cyan-900 px-2 py-0.5 rounded hover:bg-cyan-900/30 uppercase transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
              >
                 + Hire
              </button>

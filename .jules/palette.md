@@ -1,0 +1,3 @@
+## 2024-05-24 - Explicit Focus Indicators in Dark Themes
+**Learning:** In dark-themed applications with dark backgrounds and borders, default browser focus rings are often invisible or have insufficient contrast. This causes severe accessibility issues for keyboard navigation.
+**Action:** When adding custom interactive elements or styling buttons in a dark theme, always implement explicit `focus-visible` states using high-contrast colors (e.g. cyan-500) and explicitly define focus ring offsets against the dark background (e.g. `focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900`).
