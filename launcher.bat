@@ -17,8 +17,10 @@ echo ✅ Node.js found
 
 :: Set Moonshot API Key (you can change this or use env var)
 if "%MOONSHOT_API_KEY%"=="" (
-    set "MOONSHOT_API_KEY=sk-bU4wUps8PWHO2OQZCSIsELYCi9W22wb0jOTNkWCgE4rnHrLD"
-    echo 🔑 Using built-in Moonshot API key
+    echo ❌ MOONSHOT_API_KEY environment variable is not set!
+    echo Please set it using: set "MOONSHOT_API_KEY=your_api_key_here"
+    pause
+    exit /b 1
 ) else (
     echo 🔑 Using environment MOONSHOT_API_KEY
 )
