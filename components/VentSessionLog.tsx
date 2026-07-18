@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { VentMessage, Agent } from '../types';
 import { generateAgentAudio } from '../services/geminiService';
 
@@ -180,7 +180,13 @@ export const VentSessionLog: React.FC<VentSessionLogProps> = ({ messages, agents
     }
   }, [visibleMessages]);
 
-  const getAgent = (id: string) => agents.find(a => a.id === id);
+  // ⚡ BOLT OPTIMIZATION: Memoize agent lookup to O(1) map to prevent O(N) search on every message render
+  // This reduces complexity from O(M*N) to O(M) during the frequent typing interval re-renders.
+  const agentMap = useMemo(() => {
+    const map = new Map<string, Agent>();
+    agents.forEach(a => map.set(a.id, a));
+    return map;
+  }, [agents]);
 
   return (
     <div ref={scrollRef} className="h-full overflow-y-auto p-4 space-y-4 font-mono scroll-smooth pb-20">
@@ -191,7 +197,7 @@ export const VentSessionLog: React.FC<VentSessionLogProps> = ({ messages, agents
       )}
       
       {visibleMessages.map((msg, idx) => {
-        const agent = getAgent(msg.agentId);
+        const agent = agentMap.get(msg.agentId);
         const isRight = idx % 2 === 1; 
         const isPlaying = playingAudioId === msg.id;
         const isLoading = loadingAudioId === msg.id;
