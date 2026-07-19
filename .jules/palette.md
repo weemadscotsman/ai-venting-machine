@@ -1,0 +1,3 @@
+## 2024-07-19 - Keyboard Accessibility for Custom Modal Close Buttons in Dark Themes
+**Learning:** In a heavily styled dark-themed application, custom icon-only close buttons (like `[X]`, `[ESC]`, or `✕`) often blend in or lack clear focus indicators, which severely impacts keyboard navigation and screen reader accessibility. Additionally, textual representations like `[ESC]` without proper semantic meaning can be confusing to screen readers.
+**Action:** Always add explicit `focus-visible` outline classes (e.g., `focus-visible:ring-2 focus-visible:ring-cyan-500`) to ensure contrast against dark backgrounds. Ensure icon-only buttons have an `aria-label` (e.g., "Close"), and explicitly hide the decorative/textual icon from screen readers using `<span aria-hidden="true">`.
