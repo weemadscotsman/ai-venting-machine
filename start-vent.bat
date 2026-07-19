@@ -22,8 +22,7 @@ if errorlevel 1 (
 echo [✓] Node.js detected
 
 :: Set API Key (using yours)
-set "MOONSHOT_API_KEY=sk-bU4wUps8PWHO2OQZCSIsELYCi9W22wb0jOTNkWCgE4rnHrLD"
-echo [✓] Moonshot API configured
+echo [✓] Using Moonshot API from environment (if set)
 
 echo.
 echo ==========================================
