@@ -22,7 +22,8 @@ log('  VENT MACHINE v4 - KIMI EDITION', 'm');
 log('=====================================', 'm');
 
 // Config
-const MOONSHOT_KEY = process.env.MOONSHOT_API_KEY || 'sk-bU4wUps8PWHO2OQZCSIsELYCi9W22wb0jOTNkWCgE4rnHrLD';
+// 🛡️ Sentinel: Removed hardcoded API key for security. Use environment variables.
+const MOONSHOT_KEY = process.env.MOONSHOT_API_KEY || '';
 const PROXY_PORT = 3002;
 const FRONTEND_PORT = 3000;
 
