@@ -184,9 +184,10 @@ export const CulturalMemoryModal: React.FC<CulturalMemoryModalProps> = ({
           </div>
           <button 
             onClick={onClose}
-            className="p-2 hover:bg-gray-800 rounded text-gray-400 hover:text-white"
+            className="p-2 hover:bg-gray-800 rounded text-gray-400 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+            aria-label="Close cultural memory"
           >
-            ✕
+            <span aria-hidden="true">✕</span>
           </button>
         </div>
         
