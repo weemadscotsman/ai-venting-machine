@@ -1,0 +1,4 @@
+## 2026-07-20 - Explicit Focus Indicators & Aria-Hidden Text Icons
+
+**Learning:** When using faux-icons or decorative textual symbols like `[X]` or `[ESC]` in icon-only buttons, screen readers interpret them literally (e.g. "Left bracket X right bracket"), which creates poor accessible experiences. Furthermore, dark themes often cause default browser focus rings to blend into the background, making keyboard navigation difficult to track.
+**Action:** Always wrap textual decorative symbols in `<span aria-hidden="true">` while providing a descriptive `aria-label` on the parent `<button>`. For all custom UI controls in dark-themed apps, explicitly define keyboard focus styles using utilities like `focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900` to guarantee high contrast visibility against dark backgrounds.
