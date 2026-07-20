@@ -15,10 +15,12 @@ if errorlevel 1 (
 
 echo ✅ Node.js found
 
-:: Set Moonshot API Key (you can change this or use env var)
+:: Set Moonshot API Key (requires environment variable for security)
 if "%MOONSHOT_API_KEY%"=="" (
-    set "MOONSHOT_API_KEY=sk-bU4wUps8PWHO2OQZCSIsELYCi9W22wb0jOTNkWCgE4rnHrLD"
-    echo 🔑 Using built-in Moonshot API key
+    echo ❌ ERROR: MOONSHOT_API_KEY environment variable is not set!
+    echo Please set it before running this script for security reasons.
+    pause
+    exit /b 1
 ) else (
     echo 🔑 Using environment MOONSHOT_API_KEY
 )
