@@ -1,0 +1,3 @@
+## 2024-05-24 - Optimizing Dynamic React Lists with Audio State
+**Learning:** In a list of dynamic items where each item can have individual state changes (like audio playback `isPlaying` or `isLoading`), updating that state in the parent component triggers a full re-render of every item in the list.
+**Action:** Extract list items into their own components and wrap them in `React.memo()`. Combine this with passing stable callback functions using `React.useCallback()` and the latest-ref pattern (via `useRef`) for event handlers like `onPlay` to prevent stale closures without breaking the stability of the function reference.
