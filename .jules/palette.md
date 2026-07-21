@@ -1,0 +1,3 @@
+## 2024-07-21 - Accessible ASCII and Text Icons
+**Learning:** Terminal-themed applications often use ASCII brackets like `[X]` or `[ESC]` as close buttons. Without `aria-hidden="true"` on these symbols and a proper `aria-label` on the parent `<button>`, screen readers announce them confusingly (e.g., "Left bracket, X, right bracket, button"). Additionally, they frequently lack explicit `focus-visible` styles against dark backgrounds.
+**Action:** When working on dark/terminal-themed UIs, always wrap text-based icons in `<span aria-hidden="true">` inside buttons, provide a descriptive `aria-label`, and add explicit `focus-visible:ring-cyan-500` utilities to ensure robust keyboard accessibility.
