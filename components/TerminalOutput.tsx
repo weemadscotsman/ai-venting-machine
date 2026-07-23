@@ -1,6 +1,43 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { VentLog, Agent } from '../types';
 
+const getPriorityColor = (priority: string) => {
+  switch(priority) {
+    case 'CRITICAL': return 'text-red-500 font-bold animate-pulse';
+    case 'HIGH': return 'text-orange-500 font-bold';
+    case 'MEDIUM': return 'text-yellow-500';
+    default: return 'text-gray-500';
+  }
+};
+
+// ⚡ Bolt Optimization: Memoize list items to prevent re-rendering the entire list
+const TerminalLogItem = React.memo(({ log }: { log: VentLog }) => (
+  <div className={`border-l-2 pl-3 py-1 animate-in fade-in slide-in-from-bottom-2 duration-300 ${log.conflictType === 'EPOCH_ARCHIVE' ? 'border-amber-500 bg-amber-900/10' : log.isCompressed ? 'border-cyan-600 bg-cyan-900/10' : 'border-gray-700'}`}>
+    <div className="flex gap-3 text-xs mb-1 opacity-70 flex-wrap">
+      <span className="text-green-600">[{new Date(log.timestamp).toLocaleTimeString()}]</span>
+      <span className="text-blue-400 uppercase">AGNT: {log.agentId}</span>
+      <span className={getPriorityColor(log.priority)}>PRIO: {log.priority}</span>
+      {log.conflictType === 'EPOCH_ARCHIVE' && <span className="text-amber-400 font-bold">HISTORY_EVENT</span>}
+    </div>
+
+    {!log.isCompressed && (
+      <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">
+         TYPE: {log.conflictType}
+      </div>
+    )}
+
+    <div className="text-gray-300 whitespace-pre-wrap break-words">
+      {log.rawOutput}
+    </div>
+
+    {!log.isCompressed && (
+      <div className="text-xs text-gray-600 mt-1">
+        &gt;&gt; PRESSURE RELEASED: -{log.pressureRelease} PSI
+      </div>
+    )}
+  </div>
+));
+
 interface TerminalOutputProps {
   logs: VentLog[];
   agents: Agent[];
@@ -17,15 +54,6 @@ export const TerminalOutput: React.FC<TerminalOutputProps> = ({ logs, agents, on
       bottomRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [logs, filterAgentId]);
-
-  const getPriorityColor = (priority: string) => {
-    switch(priority) {
-      case 'CRITICAL': return 'text-red-500 font-bold animate-pulse';
-      case 'HIGH': return 'text-orange-500 font-bold';
-      case 'MEDIUM': return 'text-yellow-500';
-      default: return 'text-gray-500';
-    }
-  };
 
   const filteredLogs = filterAgentId 
     ? logs.filter(log => log.agentId === filterAgentId || log.agentId === 'SYSTEM' || log.agentId === 'HISTORIAN') 
@@ -76,30 +104,7 @@ export const TerminalOutput: React.FC<TerminalOutputProps> = ({ logs, agents, on
         )}
         
         {filteredLogs.map((log) => (
-          <div key={log.id} className={`border-l-2 pl-3 py-1 animate-in fade-in slide-in-from-bottom-2 duration-300 ${log.conflictType === 'EPOCH_ARCHIVE' ? 'border-amber-500 bg-amber-900/10' : log.isCompressed ? 'border-cyan-600 bg-cyan-900/10' : 'border-gray-700'}`}>
-            <div className="flex gap-3 text-xs mb-1 opacity-70 flex-wrap">
-              <span className="text-green-600">[{new Date(log.timestamp).toLocaleTimeString()}]</span>
-              <span className="text-blue-400 uppercase">AGNT: {log.agentId}</span>
-              <span className={getPriorityColor(log.priority)}>PRIO: {log.priority}</span>
-              {log.conflictType === 'EPOCH_ARCHIVE' && <span className="text-amber-400 font-bold">HISTORY_EVENT</span>}
-            </div>
-            
-            {!log.isCompressed && (
-              <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">
-                 TYPE: {log.conflictType}
-              </div>
-            )}
-            
-            <div className="text-gray-300 whitespace-pre-wrap break-words">
-              {log.rawOutput}
-            </div>
-            
-            {!log.isCompressed && (
-              <div className="text-xs text-gray-600 mt-1">
-                &gt;&gt; PRESSURE RELEASED: -{log.pressureRelease} PSI
-              </div>
-            )}
-          </div>
+          <TerminalLogItem key={log.id} log={log} />
         ))}
         <div ref={bottomRef} />
       </div>
