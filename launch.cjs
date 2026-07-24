@@ -22,7 +22,10 @@ log('  VENT MACHINE v4 - KIMI EDITION', 'm');
 log('=====================================', 'm');
 
 // Config
-const MOONSHOT_KEY = process.env.MOONSHOT_API_KEY || 'sk-bU4wUps8PWHO2OQZCSIsELYCi9W22wb0jOTNkWCgE4rnHrLD';
+const MOONSHOT_KEY = process.env.MOONSHOT_API_KEY || '';
+if (!MOONSHOT_KEY) {
+  log('\n⚠️ WARNING: MOONSHOT_API_KEY environment variable is not set. API calls may fail.', 'y');
+}
 const PROXY_PORT = 3002;
 const FRONTEND_PORT = 3000;
 
