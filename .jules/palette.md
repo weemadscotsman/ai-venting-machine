@@ -1,0 +1,5 @@
+## 2025-03-08 - Accessible Close and Color Selection Buttons
+
+**Learning:** Interactive UI controls in dark themes, especially those built from `div`s or simple `button`s (like color swatches), often have their native focus rings washed out or entirely hidden. Furthermore, replacing native elements with iconic representations (like `[X]` for close) without `aria-label`s or `aria-hidden` attributes makes them opaque to screen readers.
+
+**Action:** Ensure all interactive elements, particularly those that are icon-only or custom UI components, are given explicit `focus-visible` utility classes that contrast well against dark backgrounds (e.g., `focus-visible:ring-cyan-500` with `focus-visible:ring-offset-[#0a0a0a]`). Add descriptive `aria-label`s and use `aria-pressed` or `aria-checked` to communicate state clearly to assistive technologies. Wrap purely decorative or structural text symbols (like `[X]` or `[ESC]`) with `<span aria-hidden="true">` to prevent screen readers from reading them out in a confusing manner.
