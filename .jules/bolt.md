@@ -1,0 +1,3 @@
+## 2024-05-24 - React List Rendering Performance in VentSessionLog
+**Learning:** In frequently updating React components (like a live chat or log view appending new messages every few seconds), rendering the entire list of messages inside the main component body forces a full re-render of every DOM element in that list whenever local state (like `playingAudioId` or `visibleMessages`) changes. This is highly inefficient for long lists.
+**Action:** Always extract the individual list item into its own component and wrap it in `React.memo()`. When passing callbacks to these memoized items, wrap them in `useCallback()` and employ the `useRef` (latest-ref) pattern to safely access changing outer state without violating the stable closure or triggering unnecessary re-renders.
