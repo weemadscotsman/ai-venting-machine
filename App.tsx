@@ -573,9 +573,10 @@ const App: React.FC = () => {
               onClick={() => setIsSettingsModalOpen(true)}
               className="group flex flex-col items-center justify-center p-2 border border-gray-800 bg-gray-900/50 hover:bg-gray-800 hover:border-cyan-500 transition-all rounded w-12 h-12 md:w-16 md:h-14"
               title="Configure LLM Provider"
+              aria-label="Settings"
            >
-              <span className="text-lg group-hover:text-cyan-400 group-hover:animate-spin">⚙</span>
-              <span className="text-[9px] text-gray-500 uppercase mt-1 group-hover:text-cyan-400 hidden md:block">Config</span>
+              <span className="text-lg group-hover:text-cyan-400 group-hover:animate-spin" aria-hidden="true">⚙</span>
+              <span className="text-[9px] text-gray-500 uppercase mt-1 group-hover:text-cyan-400 hidden md:block" aria-hidden="true">Config</span>
            </button>
 
            <div className="flex-1 md:w-64">
