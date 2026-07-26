@@ -1,0 +1,3 @@
+## 2023-10-27 - Icon-only Close Button Accessibility
+**Learning:** In text-heavy dark-themed modals, ASCII-style close buttons like `[X]` or `[ESC]` without proper ARIA labels are entirely unreadable to screen readers and difficult to focus without visual rings.
+**Action:** Always wrap ASCII icon texts in `<span aria-hidden="true">`, provide an `aria-label` on the parent `<button>`, and add explicit `focus-visible` ring utilities (`focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 rounded p-1`) to ensure keyboard navigators can clearly see the focus state on dark backgrounds.
