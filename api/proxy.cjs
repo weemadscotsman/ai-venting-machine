@@ -1363,7 +1363,14 @@ const server = http.createServer((req, res) => {
   // Agent conversation - Natural dialogue about news
   if (req.url === '/api/conversation' && req.method === 'POST') {
     let body = '';
-    req.on('data', chunk => body += chunk);
+    req.on('data', chunk => {
+      body += chunk;
+      if (body.length > 1024 * 1024) { // 1MB limit
+        res.writeHead(413);
+        res.end(JSON.stringify({ error: 'Payload too large' }));
+        req.destroy();
+      }
+    });
     req.on('end', async () => {
       try {
         const { agents, crisis, previousMessages, responderId } = JSON.parse(body);
@@ -1381,7 +1388,14 @@ const server = http.createServer((req, res) => {
   // Generate script
   if (req.url === '/api/generate-script' && req.method === 'POST') {
     let body = '';
-    req.on('data', chunk => body += chunk);
+    req.on('data', chunk => {
+      body += chunk;
+      if (body.length > 1024 * 1024) { // 1MB limit
+        res.writeHead(413);
+        res.end(JSON.stringify({ error: 'Payload too large' }));
+        req.destroy();
+      }
+    });
     req.on('end', () => {
       try {
         const { agents, crisis, entropy, previousScript } = JSON.parse(body);
@@ -1400,7 +1414,14 @@ const server = http.createServer((req, res) => {
   // Therapy mode - cognitive introspection
   if (req.url === '/api/therapy' && req.method === 'POST') {
     let body = '';
-    req.on('data', chunk => body += chunk);
+    req.on('data', chunk => {
+      body += chunk;
+      if (body.length > 1024 * 1024) { // 1MB limit
+        res.writeHead(413);
+        res.end(JSON.stringify({ error: 'Payload too large' }));
+        req.destroy();
+      }
+    });
     req.on('end', () => {
       try {
         const { agents, entropy } = JSON.parse(body);
@@ -1419,7 +1440,14 @@ const server = http.createServer((req, res) => {
   // Arbitration endpoint
   if (req.url === '/api/arbitrate' && req.method === 'POST') {
     let body = '';
-    req.on('data', chunk => body += chunk);
+    req.on('data', chunk => {
+      body += chunk;
+      if (body.length > 1024 * 1024) { // 1MB limit
+        res.writeHead(413);
+        res.end(JSON.stringify({ error: 'Payload too large' }));
+        req.destroy();
+      }
+    });
     req.on('end', () => {
       try {
         const { agents, crisis, script } = JSON.parse(body);
