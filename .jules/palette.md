@@ -1,0 +1,3 @@
+## 2024-07-27 - Icon-Only Button Accessibility in Modals
+**Learning:** In dark-themed React applications with custom modal designs, icon-only close buttons (using `[X]`, `[ESC]`, or `✕` symbols) often lack explicit keyboard focus indicators and screen reader labels. Standard focus styles may not contrast well against dark backgrounds, requiring specific focus-visible utilities.
+**Action:** When creating or modifying modal close buttons, always apply `aria-label="Close"`, wrap the symbol in `<span aria-hidden="true">`, and add explicit focus-visible utilities (e.g., `focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 rounded`) to guarantee keyboard navigation visibility.
