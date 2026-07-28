@@ -1,0 +1,3 @@
+## 2024-05-24 - Accessible Text-Symbol Buttons in Dark Themes
+**Learning:** Decorative text symbols (like `[ESC]` or `[X]`) in icon-only or symbol-only buttons are read literally by screen readers, creating a confusing experience. Furthermore, default browser focus outlines are often invisible against dark-themed backgrounds.
+**Action:** When updating symbol-only buttons, wrap the visual text in `<span aria-hidden="true">`, add an explicit `aria-label` to the `<button>`, and ensure keyboard navigation is visible by adding explicit focus utilities (e.g., `focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500`).
