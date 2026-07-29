@@ -1,0 +1,3 @@
+## 2024-05-24 - Accessible Icon and Textual Symbol Buttons
+**Learning:** Icon-only buttons and buttons relying purely on textual symbols (like `[ESC]`) can be inaccessible to screen readers. Adding `aria-label` provides necessary context, and wrapping the decorative symbol with `aria-hidden="true"` prevents screen readers from redundantly or incorrectly announcing it. Additionally, applying explicit focus visibility classes (`focus-visible:ring-2`) is crucial for keyboard navigation, particularly against dark backgrounds.
+**Action:** Always add `aria-label` to buttons without descriptive text content. Use `aria-hidden="true"` on the inner icons or symbols. Ensure explicit `focus-visible` utilities are applied to maintain keyboard navigation clarity.
