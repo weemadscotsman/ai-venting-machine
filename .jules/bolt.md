@@ -1,0 +1,4 @@
+## $(date +%Y-%m-%d) - React.memo Optimization with Stable Callbacks using useRef
+
+**Learning:** When using `React.memo` to prevent unnecessary re-renders of list items (e.g., when a playback state changes for only one item), ensuring the callback functions passed as props are truly stable is critical. Using a standard `useCallback` with a dependency like `playingAudioId` will invalidate the callback for all items every time the playback state changes, nullifying the `React.memo` performance gains.
+**Action:** Use the "latest-ref pattern" by pairing `useRef` and `useEffect` to capture the current state (like `playingAudioId` or `apiKey`). By doing so, the callback doesn't need to list these rapidly-changing states in its dependency array, resulting in a perfectly stable function reference for `React.memo`.
