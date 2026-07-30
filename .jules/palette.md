@@ -1,0 +1,4 @@
+
+## 2025-03-05 - Decorative Modal Close Symbols
+**Learning:** Found an accessibility issue pattern specific to this app's components where custom modal close buttons used raw text characters like `[ESC]`, `[X]`, and `✕` without proper ARIA labels. Screen readers were likely reading these as literal text (e.g., "Left bracket E S C right bracket button" instead of "Close settings"). Furthermore, these buttons lacked explicit focus indicators for keyboard navigation in the dark theme.
+**Action:** When implementing or fixing icon-only or decorative-text buttons, always use `aria-label` for screen readers, wrap the visual symbol in `<span aria-hidden="true">` to prevent confusing read-outs, and ensure explicit focus-visible styles like `focus-visible:ring-2 focus-visible:ring-cyan-500` are applied.
