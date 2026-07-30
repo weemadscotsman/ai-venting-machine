@@ -1,0 +1,3 @@
+## 2025-03-08 - Prevent unnecessary re-renders in TerminalOutput list
+**Learning:** Returning anonymous or static helper functions inside a React component definition can cause them to be recreated on every render. Furthermore, when rendering lists, wrapping the list item component in `React.memo()` (and keeping the component definitions clean) is crucial to prevent the whole list from re-rendering when a single item is added.
+**Action:** Always move static helper functions outside the component definition. Extract list items into their own components wrapped in `React.memo()` to optimize rendering performance, especially for long lists of elements like terminal outputs or chat messages.
