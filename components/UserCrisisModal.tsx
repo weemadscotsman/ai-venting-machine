@@ -28,7 +28,14 @@ export const UserCrisisModal: React.FC<UserCrisisModalProps> = ({ isOpen, onClos
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-900 border border-gray-700 rounded-lg max-w-md w-full p-6">
+      <div className="bg-gray-900 border border-gray-700 rounded-lg max-w-md w-full p-6 relative">
+        <button
+            onClick={onClose}
+            className="absolute top-4 right-4 text-gray-500 hover:text-white text-xs font-mono"
+            aria-label="Close modal"
+        >
+            [X]
+        </button>
         <h2 className="text-xl font-bold text-white mb-4">Inject Custom Crisis</h2>
         <p className="text-sm text-gray-400 mb-4">
           Create your own crisis for the team to deliberate on.
@@ -36,8 +43,9 @@ export const UserCrisisModal: React.FC<UserCrisisModalProps> = ({ isOpen, onClos
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs text-gray-500 uppercase mb-1">Headline</label>
+            <label htmlFor="crisis-headline" className="block text-xs text-gray-500 uppercase mb-1">Headline</label>
             <input
+              id="crisis-headline"
               type="text"
               value={headline}
               onChange={(e) => setHeadline(e.target.value)}
@@ -48,8 +56,9 @@ export const UserCrisisModal: React.FC<UserCrisisModalProps> = ({ isOpen, onClos
           </div>
           
           <div>
-            <label className="block text-xs text-gray-500 uppercase mb-1">Context</label>
+            <label htmlFor="crisis-context" className="block text-xs text-gray-500 uppercase mb-1">Context</label>
             <textarea
+              id="crisis-context"
               value={context}
               onChange={(e) => setContext(e.target.value)}
               placeholder="What exactly happened?"
@@ -61,8 +70,9 @@ export const UserCrisisModal: React.FC<UserCrisisModalProps> = ({ isOpen, onClos
           
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-gray-500 uppercase mb-1">Category</label>
+              <label htmlFor="crisis-category" className="block text-xs text-gray-500 uppercase mb-1">Category</label>
               <select
+                id="crisis-category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white text-sm focus:border-cyan-500 outline-none"
@@ -76,8 +86,9 @@ export const UserCrisisModal: React.FC<UserCrisisModalProps> = ({ isOpen, onClos
             </div>
             
             <div>
-              <label className="block text-xs text-gray-500 uppercase mb-1">Threat: {threatLevel}%</label>
+              <label htmlFor="crisis-threat" className="block text-xs text-gray-500 uppercase mb-1">Threat: {threatLevel}%</label>
               <input
+                id="crisis-threat"
                 type="range"
                 min="1"
                 max="100"
