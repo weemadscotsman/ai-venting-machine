@@ -1,0 +1,3 @@
+## 2024-05-18 - Missing Memoization in Live Terminal Log Re-renders
+**Learning:** In a live terminal component with playback states (like `VentSessionLog.tsx`), updating `playingAudioId` inline within the `.map()` method causes the entire list to re-render for every single item. This creates significant main thread blocking on longer session logs when users interact with play buttons or when playback status auto-advances.
+**Action:** Always extract complex list items into separate components, wrap them in `React.memo()`, and pass stable functions (`useCallback` with latest-ref refs instead of closures referencing changing state) down to prevent performance degradation on interactive lists.
