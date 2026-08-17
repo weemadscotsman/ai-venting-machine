@@ -41,6 +41,61 @@ async function decodeAudioData(
   return buffer;
 }
 
+const VentMessageItem = React.memo(({
+  msg,
+  idx,
+  agent,
+  isPlaying,
+  isLoading,
+  onPlayAudio
+}: {
+  msg: VentMessage;
+  idx: number;
+  agent: Agent | undefined;
+  isPlaying: boolean;
+  isLoading: boolean;
+  onPlayAudio: (msg: VentMessage, voiceName?: string) => void;
+}) => {
+  const isRight = idx % 2 === 1;
+
+  return (
+    <div
+      key={msg.id}
+      className={`flex ${isRight ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-500 fade-in group`}
+    >
+      <div className={`max-w-[85%] md:max-w-[75%] border border-gray-800 p-3 rounded-sm relative ${isRight ? 'bg-gray-900/50' : 'bg-black/80'}`}>
+         <div className="flex items-center gap-2 mb-2 border-b border-gray-800 pb-1">
+           <div className={`w-2 h-2 rounded-full ${agent?.status === 'CRITICAL' ? 'bg-red-500' : 'bg-green-500'}`}></div>
+           <span className={`font-bold text-xs uppercase tracking-wider ${agent?.avatarColor}`}>{agent?.name}</span>
+           {agent?.icon && <span className="text-sm">{agent.icon}</span>}
+           <span className="text-[10px] text-gray-500 ml-auto uppercase opacity-70">[{msg.emotion}]</span>
+
+           {/* Play Button */}
+           <button
+              onClick={() => onPlayAudio(msg, agent?.voiceName)}
+              disabled={isLoading}
+              className={`ml-2 p-1 rounded-full border border-gray-700 hover:bg-gray-800 transition-colors ${isPlaying ? 'text-green-400 border-green-900 animate-pulse' : 'text-gray-500'}`}
+              title="Play Voice"
+              type="button"
+              aria-label={`Play audio for ${agent?.name}`}
+           >
+              {isLoading ? (
+                  <span className="block w-3 h-3 border-2 border-gray-500 border-t-transparent rounded-full animate-spin"></span>
+              ) : isPlaying ? (
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+              ) : (
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              )}
+           </button>
+         </div>
+         <div className="text-sm md:text-base text-gray-300 leading-relaxed font-mono">
+           {msg.text}
+         </div>
+      </div>
+    </div>
+  );
+});
+
 export const VentSessionLog: React.FC<VentSessionLogProps> = ({ messages, agents, isPlaying, onSpeakerChange, apiKey }) => {
   const [visibleMessages, setVisibleMessages] = useState<VentMessage[]>([]);
   const [loadingAudioId, setLoadingAudioId] = useState<string | null>(null);
@@ -48,6 +103,11 @@ export const VentSessionLog: React.FC<VentSessionLogProps> = ({ messages, agents
   const scrollRef = useRef<HTMLDivElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const sourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
+  const stateRef = useRef({ playingAudioId, apiKey });
+
+  useEffect(() => {
+    stateRef.current = { playingAudioId, apiKey };
+  }, [playingAudioId, apiKey]);
 
   // Initialize Audio Context on user interaction (handled in play function) or lazy load
   const getAudioContext = () => {
@@ -57,17 +117,17 @@ export const VentSessionLog: React.FC<VentSessionLogProps> = ({ messages, agents
     return audioContextRef.current;
   };
 
-  const handlePlayAudio = async (msg: VentMessage, voiceName?: string) => {
+  const handlePlayAudio = React.useCallback(async (msg: VentMessage, voiceName?: string) => {
     // Stop current audio if playing
     if (sourceNodeRef.current) {
         try { sourceNodeRef.current.stop(); } catch(e) {}
         sourceNodeRef.current = null;
         setPlayingAudioId(null);
-        if (playingAudioId === msg.id) return; // Toggle off
+        if (stateRef.current.playingAudioId === msg.id) return; // Toggle off
     }
 
     // Only attempt if we have a key (or if we want to rely on service internal env fallback, but service requires arg)
-    const keyToUse = apiKey || process.env.API_KEY || '';
+    const keyToUse = stateRef.current.apiKey || process.env.API_KEY || '';
     if (!keyToUse) {
         console.warn("No API Key available for TTS");
         return;
@@ -103,7 +163,7 @@ export const VentSessionLog: React.FC<VentSessionLogProps> = ({ messages, agents
     } finally {
         setLoadingAudioId(null);
     }
-  };
+  }, []);
 
   // Playback Logic for Chat
   useEffect(() => {
@@ -190,49 +250,17 @@ export const VentSessionLog: React.FC<VentSessionLogProps> = ({ messages, agents
           </div>
       )}
       
-      {visibleMessages.map((msg, idx) => {
-        const agent = getAgent(msg.agentId);
-        const isRight = idx % 2 === 1; 
-        const isPlaying = playingAudioId === msg.id;
-        const isLoading = loadingAudioId === msg.id;
-
-        return (
-          <div 
-            key={msg.id} 
-            className={`flex ${isRight ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-500 fade-in group`}
-          >
-            <div className={`max-w-[85%] md:max-w-[75%] border border-gray-800 p-3 rounded-sm relative ${isRight ? 'bg-gray-900/50' : 'bg-black/80'}`}>
-               <div className="flex items-center gap-2 mb-2 border-b border-gray-800 pb-1">
-                 <div className={`w-2 h-2 rounded-full ${agent?.status === 'CRITICAL' ? 'bg-red-500' : 'bg-green-500'}`}></div>
-                 <span className={`font-bold text-xs uppercase tracking-wider ${agent?.avatarColor}`}>{agent?.name}</span>
-                 {agent?.icon && <span className="text-sm">{agent.icon}</span>}
-                 <span className="text-[10px] text-gray-500 ml-auto uppercase opacity-70">[{msg.emotion}]</span>
-                 
-                 {/* Play Button */}
-                 <button 
-                    onClick={() => handlePlayAudio(msg, agent?.voiceName)}
-                    disabled={isLoading}
-                    className={`ml-2 p-1 rounded-full border border-gray-700 hover:bg-gray-800 transition-colors ${isPlaying ? 'text-green-400 border-green-900 animate-pulse' : 'text-gray-500'}`}
-                    title="Play Voice"
-                    type="button"
-                    aria-label={`Play audio for ${agent?.name}`}
-                 >
-                    {isLoading ? (
-                        <span className="block w-3 h-3 border-2 border-gray-500 border-t-transparent rounded-full animate-spin"></span>
-                    ) : isPlaying ? (
-                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                    ) : (
-                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                    )}
-                 </button>
-               </div>
-               <div className="text-sm md:text-base text-gray-300 leading-relaxed font-mono">
-                 {msg.text}
-               </div>
-            </div>
-          </div>
-        );
-      })}
+      {visibleMessages.map((msg, idx) => (
+        <VentMessageItem
+          key={msg.id}
+          msg={msg}
+          idx={idx}
+          agent={getAgent(msg.agentId)}
+          isPlaying={playingAudioId === msg.id}
+          isLoading={loadingAudioId === msg.id}
+          onPlayAudio={handlePlayAudio}
+        />
+      ))}
       
       {/* Typing Indicator */}
       {isPlaying && visibleMessages.length < messages.length && messages.length > 0 && (
