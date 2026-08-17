@@ -2,3 +2,8 @@
 **Vulnerability:** The proxy server's static asset handler at `api/proxy.cjs` directly appended user-provided URLs (`req.url`) to the base directory path without validation (`path.join(__dirname, '..', 'dist', req.url)`). This allowed attackers to use directory traversal sequences (like `/assets/../../api/.env`) to access files outside the intended `dist` directory, exposing sensitive secrets.
 **Learning:** Even when serving static files via a custom server or proxy, `path.join` is insufficient to prevent traversal. URLs are not automatically decoded or bounded by the filesystem. A malicious path string can still resolve to a parent directory unless explicitly restricted.
 **Prevention:** When serving files based on user input, always decode the URL, resolve it to an absolute path using `path.resolve`, and explicitly verify that the resolved path starts with the intended base directory (including the path separator, e.g., `.startsWith(basePath + path.sep)`) before serving the file.
+
+## 2025-02-24 - Hardcoded Secrets in Convenience Launch Scripts
+**Vulnerability:** A hardcoded `MOONSHOT_API_KEY` was found embedded directly in multiple launch scripts (`launch.cjs`, `launcher.bat`, and `start-vent.bat`) as a fallback default.
+**Learning:** Developers often hardcode secrets in local convenience/boot scripts (like `.bat` or `.cjs` files) to simplify onboarding or local testing, but these files are frequently committed to version control, exposing the secrets.
+**Prevention:** Always enforce that launch scripts read from environment variables or properly ignored `.env` files. If a required secret is missing, scripts must fail securely and print a helpful error message instead of silently falling back to a hardcoded default.
