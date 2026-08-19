@@ -1,0 +1,3 @@
+## 2024-08-19 - React setInterval and Array Ref Re-render Optimization
+**Learning:** In React components that iterate over rapidly updating arrays (e.g., logging chat streams during an active session using `setInterval`), passing unmemoized list items directly within a large `.map` loop forces the entire list to re-render constantly. This problem is exacerbated when components rely heavily on DOM nodes or play logic on every loop.
+**Action:** Always extract complex list items into separate components wrapped in `React.memo()`. Provide them with stable callbacks using `useCallback` paired with the "latest-ref" pattern (`useRef`) to avoid stale closures, allowing React to skip re-rendering individual messages that haven't changed.
