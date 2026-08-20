@@ -1,0 +1,3 @@
+## 2026-08-20 - Extracted and Memoized List Items
+**Learning:** In React components that render large lists of complex items (like chat messages with interactive elements like a play button), state changes (such as tracking which message is currently playing) will cause all list items to re-render if the items are inline within the mapping.
+**Action:** Extract list items into their own components wrapped in `React.memo()`. Use `useCallback()` combined with the latest-ref pattern (`useRef`) to pass down stable callback functions (e.g., `onPlayAudio`) to prevent the memoized components from re-rendering due to changing function references.
