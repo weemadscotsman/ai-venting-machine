@@ -1,4 +1,4 @@
-## 2026-07-15 - Directory Traversal in Custom Static Asset Server
-**Vulnerability:** The proxy server's static asset handler at `api/proxy.cjs` directly appended user-provided URLs (`req.url`) to the base directory path without validation (`path.join(__dirname, '..', 'dist', req.url)`). This allowed attackers to use directory traversal sequences (like `/assets/../../api/.env`) to access files outside the intended `dist` directory, exposing sensitive secrets.
-**Learning:** Even when serving static files via a custom server or proxy, `path.join` is insufficient to prevent traversal. URLs are not automatically decoded or bounded by the filesystem. A malicious path string can still resolve to a parent directory unless explicitly restricted.
-**Prevention:** When serving files based on user input, always decode the URL, resolve it to an absolute path using `path.resolve`, and explicitly verify that the resolved path starts with the intended base directory (including the path separator, e.g., `.startsWith(basePath + path.sep)`) before serving the file.
+## 2025-02-28 - [DoS via Unbounded Request Bodies]
+**Vulnerability:** The proxy server concatenated POST data without size limits, allowing attackers to exhaust memory (DoS).
+**Learning:** Node.js native HTTP server `req.on('data')` streams data. It's critical to manually track accumulated length and abort (`req.destroy()`) if it exceeds reasonable bounds. Also, `req.on('end')` still fires after `destroy()`, requiring a `req.destroyed` check.
+**Prevention:** Always enforce a payload limit (e.g., 1MB) on POST endpoints when buffering incoming request bodies.
