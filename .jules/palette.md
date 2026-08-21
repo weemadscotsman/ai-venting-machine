@@ -1,0 +1,3 @@
+## 2025-02-27 - Accessible Symbol-Based Close Buttons
+**Learning:** Found a pattern where ASCII textual symbols like `[ESC]`, `[X]`, and `✕` are used inside interactive close buttons for modal dialogs. Screen readers might misinterpret or confusingly read aloud these raw characters.
+**Action:** Applied a reusable accessibility pattern by wrapping the symbol in a `<span aria-hidden="true">` to hide it from screen readers, while applying an explicit `aria-label="Close"` to the parent `<button>`. Also ensured explicit focus-visible classes (`focus-visible:ring-2 focus-visible:ring-cyan-500`) are applied so keyboard navigation remains accessible against the dark theme.
