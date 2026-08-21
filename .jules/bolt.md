@@ -1,0 +1,3 @@
+## 2023-10-24 - List Virtualization & Memoization
+**Learning:** React list components like `VentSessionLog` that render complex inline elements (especially with changing specific item state, like `playingAudioId`) suffer from heavy re-render performance costs when the array updates. Unconditional mapping without component memoization forces entire lists to update on single item changes.
+**Action:** Extract map callback returns into standalone item components wrapped in `React.memo()`. Provide them with stable callback functions using `useCallback()` and a `useRef` to hold the latest state, avoiding stale closures without breaking the memoization cache.
