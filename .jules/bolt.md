@@ -1,0 +1,3 @@
+## 2024-05-24 - Optimizing VentSessionLog List Rendering
+**Learning:** `VentSessionLog` maps over `visibleMessages` to render complex UI nodes per message (including SVG icons, flex layouts, event handlers) but lacks React.memo on the message item itself. As the chat grows during a session, appending a new message causes every existing message to re-render. Since a chat script can get long and re-renders occur every 2.5s during playback, this is a clear bottleneck.
+**Action:** Extract the message rendering logic into a separate `VentMessageItem` component wrapped in `React.memo`. This will prevent unchanged historical messages from re-rendering every time a new message is appended.
