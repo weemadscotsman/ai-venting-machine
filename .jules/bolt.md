@@ -1,0 +1,3 @@
+## 2024-05-24 - Extracted and memoized list items to prevent O(N) re-renders
+**Learning:** In long lists where individual items frequently update their state (e.g., playback indicators or appending items), unconditionally re-rendering the entire list results in O(N) re-renders. Stale closures in event handlers can also cause rendering bugs if not handled properly.
+**Action:** Extract list items into standalone components wrapped in `React.memo()`. Use stable callbacks constructed with `useCallback()` and combined with the latest-ref pattern (`useRef()`) to maintain a single stable function reference while accessing the latest state, ensuring list items only re-render when their specific props change.
