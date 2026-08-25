@@ -1,0 +1,3 @@
+## 2024-05-24 - Optimizing High-Frequency Updates with React.memo in List Rendering
+**Learning:** When a parent component receives high-frequency updates (e.g., ticking clocks or appending logs), any inline list rendering will re-evaluate and re-render every historical item. In a component like TerminalOutput receiving updates from App.tsx, this causes O(n) re-renders, increasing CPU load on every tick.
+**Action:** Always extract list items into a separate component wrapped with `React.memo` and memoize derived lists (using `useMemo`) to prevent unnecessary O(n) array filtering and rendering overhead during tick cycles.
