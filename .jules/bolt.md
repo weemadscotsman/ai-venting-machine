@@ -1,0 +1,3 @@
+## 2024-08-29 - React List Rendering with Intervals
+**Learning:** In components rendering lists alongside intervals or complex event handlers, extracting list items into `React.memo` components isn't enough if the callbacks passed down aren't stable. Unconditionally recreating callbacks like `handlePlayAudio` on every render causes all items in the list to re-render, defeating memoization, especially during streaming scenarios (like typing indicators).
+**Action:** Extract list items into their own components wrapped in `React.memo()`. Always pass stable callbacks using `useCallback()`, combined with the latest-ref pattern (`useRef`) when needed, to avoid stale closures while maintaining a stable function reference for child components.
