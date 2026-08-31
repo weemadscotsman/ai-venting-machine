@@ -118,7 +118,7 @@ export const AddAgentModal: React.FC<AddAgentModalProps> = ({ isOpen, onClose, o
       <div className="w-full max-w-md bg-[#0a0a0a] border border-gray-700 p-6 rounded shadow-2xl relative animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
         <button 
             onClick={onClose}
-            className="absolute top-2 right-2 text-gray-500 hover:text-white"
+            aria-label="Close modal" className="absolute top-2 right-2 text-gray-500 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
         >
             [X]
         </button>
