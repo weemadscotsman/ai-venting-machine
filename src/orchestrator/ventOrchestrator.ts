@@ -180,8 +180,18 @@ export class VentOrchestrator {
   }
 
   private applyStress(script: VentMessage[]): void {
+    // ⚡ Bolt: Performance optimization
+    // Replaced O(N*M) nested loop with O(N+M) using a hash map to count messages.
+    // Avoids redundant script traversal for every agent, improving scalability.
+    const messageCounts = script.reduce((acc, msg) => {
+      if (msg.agentId) {
+        acc[msg.agentId] = (acc[msg.agentId] || 0) + 1;
+      }
+      return acc;
+    }, {} as Record<string, number>);
+
     this.state.agents = this.state.agents.map(agent => {
-      const messageCount = script.filter(m => m.agentId === agent.id).length;
+      const messageCount = messageCounts[agent.id] || 0;
       if (messageCount === 0) return agent;
 
       const stressIncrease = messageCount * 4;
