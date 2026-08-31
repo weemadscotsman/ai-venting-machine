@@ -118,7 +118,8 @@ export const AddAgentModal: React.FC<AddAgentModalProps> = ({ isOpen, onClose, o
       <div className="w-full max-w-md bg-[#0a0a0a] border border-gray-700 p-6 rounded shadow-2xl relative animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
         <button 
             onClick={onClose}
-            className="absolute top-2 right-2 text-gray-500 hover:text-white"
+            aria-label="Close add agent modal"
+            className="absolute top-2 right-2 text-gray-500 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 rounded"
         >
             [X]
         </button>
@@ -188,7 +189,8 @@ export const AddAgentModal: React.FC<AddAgentModalProps> = ({ isOpen, onClose, o
                                 key={c.value}
                                 type="button"
                                 onClick={() => setColor(c.value)}
-                                className={`w-6 h-6 rounded-full border ${color === c.value ? 'border-white scale-110' : 'border-transparent opacity-50'} ${c.value.replace('text-', 'bg-')}`}
+                                aria-label={`Select color ${c.label}`}
+                                className={`w-6 h-6 rounded-full border focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 ${color === c.value ? 'border-white scale-110' : 'border-transparent opacity-50'} ${c.value.replace('text-', 'bg-')}`}
                                 title={c.label}
                             />
                         ))}

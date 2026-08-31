@@ -34,6 +34,7 @@ export const LeverControl: React.FC<LeverControlProps> = ({
           aria-checked={isAutoMode}
           aria-label="Eternal mode"
           onClick={() => onToggleAuto(!isAutoMode)}
+          aria-label={isAutoMode ? 'Disable Eternal Mode' : 'Enable Eternal Mode'}
           className={`
             w-16 h-8 rounded-full border-2 relative transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900
             ${isAutoMode ? 'bg-red-900/50 border-red-500' : 'bg-gray-900 border-gray-700'}
@@ -56,6 +57,7 @@ export const LeverControl: React.FC<LeverControlProps> = ({
         <button
           onClick={onClick}
           disabled={disabled || isAutoMode}
+          aria-label={label || 'Defragment'}
           className={`
             relative w-full h-full uppercase font-bold tracking-widest text-2xl
             border-4 transition-all duration-100 active:scale-95 flex items-center justify-center
@@ -95,6 +97,7 @@ export const LeverControl: React.FC<LeverControlProps> = ({
          <button
             onClick={onContinue}
             disabled={!canContinue || disabled || isAutoMode}
+            aria-label="Extend run"
             className={`
               w-full h-full uppercase font-bold text-sm tracking-wider
               border-4 transition-all duration-100 flex flex-col items-center justify-center gap-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900
