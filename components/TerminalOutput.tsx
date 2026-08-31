@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { VentLog, Agent } from '../types';
 
 interface TerminalOutputProps {
@@ -27,9 +27,12 @@ export const TerminalOutput: React.FC<TerminalOutputProps> = ({ logs, agents, on
     }
   };
 
-  const filteredLogs = filterAgentId 
-    ? logs.filter(log => log.agentId === filterAgentId || log.agentId === 'SYSTEM' || log.agentId === 'HISTORIAN') 
-    : logs;
+  // ⚡ Bolt: Memoize filtered logs to prevent unnecessary array recreation on every render
+  const filteredLogs = useMemo(() => {
+    return filterAgentId
+      ? logs.filter(log => log.agentId === filterAgentId || log.agentId === 'SYSTEM' || log.agentId === 'HISTORIAN')
+      : logs;
+  }, [logs, filterAgentId]);
 
   return (
     <div className="h-full flex flex-col bg-black border border-gray-800 font-mono text-sm relative overflow-hidden rounded-sm">
