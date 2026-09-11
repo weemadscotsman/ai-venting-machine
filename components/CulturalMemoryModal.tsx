@@ -185,8 +185,9 @@ export const CulturalMemoryModal: React.FC<CulturalMemoryModalProps> = ({
           <button 
             onClick={onClose}
             className="p-2 hover:bg-gray-800 rounded text-gray-400 hover:text-white"
+            aria-label="Close archive"
           >
-            ✕
+            <span aria-hidden="true">✕</span>
           </button>
         </div>
         
