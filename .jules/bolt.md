@@ -1,0 +1,3 @@
+## 2024-05-24 - Optimizing large list rendering with React.memo and latest-ref pattern
+**Learning:** Extracting list items in React into their own `React.memo`-wrapped components prevents entire list re-renders when a single item's state changes. However, passing down unstable callbacks (like one that depends on state changes) defeats the purpose of `React.memo`.
+**Action:** Use the `useRef` latest-ref pattern combined with `useCallback` to create a stable function reference for callbacks that need access to the latest component state or closures, ensuring `React.memo` effectively skips unnecessary re-renders for list items.
