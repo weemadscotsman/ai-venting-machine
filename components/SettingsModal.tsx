@@ -54,14 +54,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, c
             <div className="w-full max-w-lg bg-[#0a0a0a] border border-gray-700 p-6 rounded shadow-[0_0_50px_rgba(0,255,255,0.1)] relative">
                 <div className="flex justify-between items-center mb-6 border-b border-gray-800 pb-2">
                     <h2 className="text-xl font-bold text-cyan-500 tracking-widest">SYSTEM CORE CONFIG</h2>
-                    <button onClick={onClose} className="text-gray-500 hover:text-white">[ESC]</button>
+                    <button onClick={onClose} className="text-gray-500 hover:text-white" aria-label="Close settings">
+                        <span aria-hidden="true">[ESC]</span>
+                    </button>
                 </div>
 
                 <div className="space-y-6 font-mono text-sm">
                     {/* PROVIDER SELECTOR */}
                     <div>
-                        <label className="block text-gray-500 mb-2 text-xs uppercase">Compute Provider</label>
-                        <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
+                        <div id="provider-label" className="block text-gray-500 mb-2 text-xs uppercase">Compute Provider</div>
+                        <div className="grid grid-cols-2 gap-2 md:grid-cols-3" role="group" aria-labelledby="provider-label">
                             {PROVIDERS.map(p => (
                                 <button
                                     key={p.value}
