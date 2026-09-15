@@ -1,0 +1,3 @@
+## 2025-03-09 - Accessible Groups for Custom Controls
+**Learning:** In React apps using Tailwind, lists of generic buttons acting as radios or custom selectors are sometimes incorrectly wrapped in standard `<label>` tags. This creates invalid HTML semantics that confuse screen readers, as a `<label>` cannot wrap multiple focusable items simultaneously and expect a unified association.
+**Action:** When encountering a list of custom toggle buttons, replace the faux `<label>` with a `<div>` assigning it an ID, and wrap the button container with `role="group"` and `aria-labelledby="[ID]"` to properly group them for assistive technology.

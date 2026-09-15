@@ -36,8 +36,9 @@ export const UserCrisisModal: React.FC<UserCrisisModalProps> = ({ isOpen, onClos
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs text-gray-500 uppercase mb-1">Headline</label>
+            <label htmlFor="crisisHeadline" className="block text-xs text-gray-500 uppercase mb-1">Headline</label>
             <input
+              id="crisisHeadline"
               type="text"
               value={headline}
               onChange={(e) => setHeadline(e.target.value)}
@@ -48,8 +49,9 @@ export const UserCrisisModal: React.FC<UserCrisisModalProps> = ({ isOpen, onClos
           </div>
           
           <div>
-            <label className="block text-xs text-gray-500 uppercase mb-1">Context</label>
+            <label htmlFor="crisisContext" className="block text-xs text-gray-500 uppercase mb-1">Context</label>
             <textarea
+              id="crisisContext"
               value={context}
               onChange={(e) => setContext(e.target.value)}
               placeholder="What exactly happened?"
@@ -61,8 +63,9 @@ export const UserCrisisModal: React.FC<UserCrisisModalProps> = ({ isOpen, onClos
           
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-gray-500 uppercase mb-1">Category</label>
+              <label htmlFor="crisisCategory" className="block text-xs text-gray-500 uppercase mb-1">Category</label>
               <select
+                id="crisisCategory"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white text-sm focus:border-cyan-500 outline-none"
@@ -76,8 +79,9 @@ export const UserCrisisModal: React.FC<UserCrisisModalProps> = ({ isOpen, onClos
             </div>
             
             <div>
-              <label className="block text-xs text-gray-500 uppercase mb-1">Threat: {threatLevel}%</label>
+              <label htmlFor="crisisThreatLevel" className="block text-xs text-gray-500 uppercase mb-1">Threat: {threatLevel}%</label>
               <input
+                id="crisisThreatLevel"
                 type="range"
                 min="1"
                 max="100"
