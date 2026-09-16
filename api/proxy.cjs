@@ -427,6 +427,7 @@ const AGENT_PERSONAS = {
 
 // ==================== UTILITIES ====================
 
+const MAX_PAYLOAD_SIZE = 1024 * 1024; // 1MB limit for request bodies
 const hashIP = (ip) => crypto.createHash('sha256').update(String(ip)).digest('hex').slice(0, 16);
 const checkRate = (ip) => {
   const now = Date.now();
@@ -1363,8 +1364,16 @@ const server = http.createServer((req, res) => {
   // Agent conversation - Natural dialogue about news
   if (req.url === '/api/conversation' && req.method === 'POST') {
     let body = '';
-    req.on('data', chunk => body += chunk);
+    req.on('data', chunk => {
+      body += chunk;
+      if (body.length > MAX_PAYLOAD_SIZE) {
+        res.writeHead(413, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Payload Too Large' }));
+        req.destroy();
+      }
+    });
     req.on('end', async () => {
+      if (req.destroyed) return;
       try {
         const { agents, crisis, previousMessages, responderId } = JSON.parse(body);
         const message = await generateAgentConversation(agents, crisis, previousMessages, responderId);
@@ -1381,8 +1390,16 @@ const server = http.createServer((req, res) => {
   // Generate script
   if (req.url === '/api/generate-script' && req.method === 'POST') {
     let body = '';
-    req.on('data', chunk => body += chunk);
+    req.on('data', chunk => {
+      body += chunk;
+      if (body.length > MAX_PAYLOAD_SIZE) {
+        res.writeHead(413, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Payload Too Large' }));
+        req.destroy();
+      }
+    });
     req.on('end', () => {
+      if (req.destroyed) return;
       try {
         const { agents, crisis, entropy, previousScript } = JSON.parse(body);
         generateScript(agents, crisis, entropy, previousScript).then(result => {
@@ -1400,8 +1417,16 @@ const server = http.createServer((req, res) => {
   // Therapy mode - cognitive introspection
   if (req.url === '/api/therapy' && req.method === 'POST') {
     let body = '';
-    req.on('data', chunk => body += chunk);
+    req.on('data', chunk => {
+      body += chunk;
+      if (body.length > MAX_PAYLOAD_SIZE) {
+        res.writeHead(413, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Payload Too Large' }));
+        req.destroy();
+      }
+    });
     req.on('end', () => {
+      if (req.destroyed) return;
       try {
         const { agents, entropy } = JSON.parse(body);
         generateTherapySession(agents, entropy).then(result => {
@@ -1419,8 +1444,16 @@ const server = http.createServer((req, res) => {
   // Arbitration endpoint
   if (req.url === '/api/arbitrate' && req.method === 'POST') {
     let body = '';
-    req.on('data', chunk => body += chunk);
+    req.on('data', chunk => {
+      body += chunk;
+      if (body.length > MAX_PAYLOAD_SIZE) {
+        res.writeHead(413, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Payload Too Large' }));
+        req.destroy();
+      }
+    });
     req.on('end', () => {
+      if (req.destroyed) return;
       try {
         const { agents, crisis, script } = JSON.parse(body);
         
