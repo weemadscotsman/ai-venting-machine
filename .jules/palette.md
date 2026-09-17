@@ -1,0 +1,4 @@
+
+## 2024-05-14 - Accessible Close Buttons for Text Symbols
+**Learning:** In this application, custom text-based close symbols (like `[X]`, `[ESC]`, and `✕`) were being used directly in buttons without semantic labels. This can cause screen readers to announce the raw text symbols (e.g. "Left bracket X Right bracket, button") which is confusing for non-visual users, and also lacks a clear semantic meaning.
+**Action:** When utilizing text-based symbols inside buttons (particularly close buttons), wrap the symbol in a `<span aria-hidden="true">` to prevent the screen reader from parsing the visual-only character, and add an appropriate `aria-label` directly to the `<button>` element to convey the action clearly (e.g., `aria-label="Close modal"`). Include explicit focus-visible styles for keyboard accessibility.
