@@ -22,7 +22,12 @@ log('  VENT MACHINE v4 - KIMI EDITION', 'm');
 log('=====================================', 'm');
 
 // Config
-const MOONSHOT_KEY = process.env.MOONSHOT_API_KEY || 'sk-bU4wUps8PWHO2OQZCSIsELYCi9W22wb0jOTNkWCgE4rnHrLD';
+if (!process.env.MOONSHOT_API_KEY) {
+  log('\n[ERROR] MOONSHOT_API_KEY environment variable is missing!', 'r');
+  log('Please set it before running the launcher.', 'r');
+  process.exit(1);
+}
+const MOONSHOT_KEY = process.env.MOONSHOT_API_KEY;
 const PROXY_PORT = 3002;
 const FRONTEND_PORT = 3000;
 
