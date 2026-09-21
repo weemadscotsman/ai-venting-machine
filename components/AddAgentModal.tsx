@@ -119,8 +119,9 @@ export const AddAgentModal: React.FC<AddAgentModalProps> = ({ isOpen, onClose, o
         <button 
             onClick={onClose}
             className="absolute top-2 right-2 text-gray-500 hover:text-white"
+            aria-label="Close modal"
         >
-            [X]
+            <span aria-hidden="true">[X]</span>
         </button>
         
         <h2 className="text-xl font-bold text-cyan-500 mb-1">INITIALIZE CUSTOM AGENT</h2>
