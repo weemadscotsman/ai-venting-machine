@@ -1,0 +1,3 @@
+## 2024-05-24 - Screen Reader Friendly Close/Action Buttons
+**Learning:** When using text-based symbols (like `[X]`, `✕`, `[ESC]`, or `⚙`) in icon-only buttons, screen readers can interpret them literally (e.g., announcing "left bracket X right bracket"), causing confusion. Using just a `title` or `aria-label` on the parent button isn't sufficient if the text node itself is not hidden from the screen reader.
+**Action:** Always wrap text-based visual symbols inside interactive elements with a `<span aria-hidden="true">` tag to hide the confusing symbol from the screen reader, while relying on the button's explicit `aria-label` for semantic meaning (e.g., `<button aria-label="Close modal"><span aria-hidden="true">[X]</span></button>`).
