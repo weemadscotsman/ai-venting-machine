@@ -1250,6 +1250,36 @@ async function generateTherapySession(agents, entropy) {
   }
 }
 
+// ==================== SECURITY UTILITIES ====================
+
+// Enforce 1MB payload limit to prevent DoS attacks
+const MAX_PAYLOAD_SIZE = 1 * 1024 * 1024; // 1MB
+
+function handlePostData(req, res, callback) {
+  let body = '';
+  let payloadTooLarge = false;
+
+  req.on('data', chunk => {
+    if (payloadTooLarge) return;
+
+    body += chunk.toString();
+
+    if (Buffer.byteLength(body, 'utf8') > MAX_PAYLOAD_SIZE) {
+      payloadTooLarge = true;
+      // Send response BEFORE destroying req so client gets the 413
+      res.writeHead(413, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Payload Too Large' }));
+      req.destroy();
+    }
+  });
+
+  req.on('end', () => {
+    // Prevent double-execution if request was destroyed
+    if (req.destroyed || payloadTooLarge) return;
+    callback(body);
+  });
+}
+
 // ==================== SERVER ====================
 
 const server = http.createServer((req, res) => {
@@ -1362,9 +1392,7 @@ const server = http.createServer((req, res) => {
   
   // Agent conversation - Natural dialogue about news
   if (req.url === '/api/conversation' && req.method === 'POST') {
-    let body = '';
-    req.on('data', chunk => body += chunk);
-    req.on('end', async () => {
+    handlePostData(req, res, async (body) => {
       try {
         const { agents, crisis, previousMessages, responderId } = JSON.parse(body);
         const message = await generateAgentConversation(agents, crisis, previousMessages, responderId);
@@ -1380,9 +1408,7 @@ const server = http.createServer((req, res) => {
   
   // Generate script
   if (req.url === '/api/generate-script' && req.method === 'POST') {
-    let body = '';
-    req.on('data', chunk => body += chunk);
-    req.on('end', () => {
+    handlePostData(req, res, (body) => {
       try {
         const { agents, crisis, entropy, previousScript } = JSON.parse(body);
         generateScript(agents, crisis, entropy, previousScript).then(result => {
@@ -1399,9 +1425,7 @@ const server = http.createServer((req, res) => {
   
   // Therapy mode - cognitive introspection
   if (req.url === '/api/therapy' && req.method === 'POST') {
-    let body = '';
-    req.on('data', chunk => body += chunk);
-    req.on('end', () => {
+    handlePostData(req, res, (body) => {
       try {
         const { agents, entropy } = JSON.parse(body);
         generateTherapySession(agents, entropy).then(result => {
@@ -1418,9 +1442,7 @@ const server = http.createServer((req, res) => {
   
   // Arbitration endpoint
   if (req.url === '/api/arbitrate' && req.method === 'POST') {
-    let body = '';
-    req.on('data', chunk => body += chunk);
-    req.on('end', () => {
+    handlePostData(req, res, (body) => {
       try {
         const { agents, crisis, script } = JSON.parse(body);
         
