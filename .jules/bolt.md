@@ -1,0 +1,3 @@
+## 2024-05-18 - Optimized Array Rendering in Intervals
+**Learning:** Returning unconditional new array references during interval state updates (even when data is technically unchanged) combined with inline functional callbacks causes React to excessively re-render unmemoized child components, wasting CPU cycles and causing sluggish DOM updates over time.
+**Action:** Extract deeply nested list items into a separate `React.memo` component, ensure stable function references (`useCallback` with a latest-ref implementation for stateful callbacks), and avoid mapping functions that create new instances blindly inside `useEffect`.

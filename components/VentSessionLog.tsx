@@ -41,6 +41,58 @@ async function decodeAudioData(
   return buffer;
 }
 
+const VentMessageItem = React.memo(({
+  msg,
+  agent,
+  isRight,
+  isPlaying,
+  isLoading,
+  onPlayAudio
+}: {
+  msg: VentMessage,
+  agent?: Agent,
+  isRight: boolean,
+  isPlaying: boolean,
+  isLoading: boolean,
+  onPlayAudio: (msg: VentMessage, voiceName?: string) => void
+}) => {
+  return (
+    <div
+      className={`flex ${isRight ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-500 fade-in group`}
+    >
+      <div className={`max-w-[85%] md:max-w-[75%] border border-gray-800 p-3 rounded-sm relative ${isRight ? 'bg-gray-900/50' : 'bg-black/80'}`}>
+         <div className="flex items-center gap-2 mb-2 border-b border-gray-800 pb-1">
+           <div className={`w-2 h-2 rounded-full ${agent?.status === 'CRITICAL' ? 'bg-red-500' : 'bg-green-500'}`}></div>
+           <span className={`font-bold text-xs uppercase tracking-wider ${agent?.avatarColor}`}>{agent?.name}</span>
+           {agent?.icon && <span className="text-sm">{agent.icon}</span>}
+           <span className="text-[10px] text-gray-500 ml-auto uppercase opacity-70">[{msg.emotion}]</span>
+
+           {/* Play Button */}
+           <button
+              onClick={() => onPlayAudio(msg, agent?.voiceName)}
+              disabled={isLoading}
+              className={`ml-2 p-1 rounded-full border border-gray-700 hover:bg-gray-800 transition-colors ${isPlaying ? 'text-green-400 border-green-900 animate-pulse' : 'text-gray-500'}`}
+              title="Play Voice"
+              type="button"
+              aria-label={`Play audio for ${agent?.name}`}
+           >
+              {isLoading ? (
+                  <span className="block w-3 h-3 border-2 border-gray-500 border-t-transparent rounded-full animate-spin"></span>
+              ) : isPlaying ? (
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+              ) : (
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              )}
+           </button>
+         </div>
+         <div className="text-sm md:text-base text-gray-300 leading-relaxed font-mono">
+           {msg.text}
+         </div>
+      </div>
+    </div>
+  );
+});
+
 export const VentSessionLog: React.FC<VentSessionLogProps> = ({ messages, agents, isPlaying, onSpeakerChange, apiKey }) => {
   const [visibleMessages, setVisibleMessages] = useState<VentMessage[]>([]);
   const [loadingAudioId, setLoadingAudioId] = useState<string | null>(null);
@@ -57,53 +109,61 @@ export const VentSessionLog: React.FC<VentSessionLogProps> = ({ messages, agents
     return audioContextRef.current;
   };
 
-  const handlePlayAudio = async (msg: VentMessage, voiceName?: string) => {
-    // Stop current audio if playing
-    if (sourceNodeRef.current) {
-        try { sourceNodeRef.current.stop(); } catch(e) {}
-        sourceNodeRef.current = null;
-        setPlayingAudioId(null);
-        if (playingAudioId === msg.id) return; // Toggle off
-    }
+  const handlePlayAudioLatest = useRef<((msg: VentMessage, voiceName?: string) => Promise<void>) | null>(null);
 
-    // Only attempt if we have a key (or if we want to rely on service internal env fallback, but service requires arg)
-    const keyToUse = apiKey || process.env.API_KEY || '';
-    if (!keyToUse) {
-        console.warn("No API Key available for TTS");
-        return;
-    }
+  React.useLayoutEffect(() => {
+    handlePlayAudioLatest.current = async (msg: VentMessage, voiceName?: string) => {
+      // Stop current audio if playing
+      if (sourceNodeRef.current) {
+          try { sourceNodeRef.current.stop(); } catch(e) {}
+          sourceNodeRef.current = null;
+          setPlayingAudioId(null);
+          if (playingAudioId === msg.id) return; // Toggle off
+      }
 
-    setLoadingAudioId(msg.id);
+      // Only attempt if we have a key (or if we want to rely on service internal env fallback, but service requires arg)
+      const keyToUse = apiKey || process.env.API_KEY || '';
+      if (!keyToUse) {
+          console.warn("No API Key available for TTS");
+          return;
+      }
 
-    try {
-        const base64 = await generateAgentAudio(msg.text, voiceName || 'Zephyr', keyToUse);
-        if (!base64) throw new Error("No audio returned");
+      setLoadingAudioId(msg.id);
 
-        const ctx = getAudioContext();
-        if (ctx.state === 'suspended') await ctx.resume();
+      try {
+          const base64 = await generateAgentAudio(msg.text, voiceName || 'Zephyr', keyToUse);
+          if (!base64) throw new Error("No audio returned");
 
-        const pcmData = decodeBase64(base64);
-        const audioBuffer = await decodeAudioData(pcmData, ctx, 24000, 1);
+          const ctx = getAudioContext();
+          if (ctx.state === 'suspended') await ctx.resume();
 
-        const source = ctx.createBufferSource();
-        source.buffer = audioBuffer;
-        source.connect(ctx.destination);
-        
-        source.onended = () => {
-            setPlayingAudioId(null);
-            sourceNodeRef.current = null;
-        };
+          const pcmData = decodeBase64(base64);
+          const audioBuffer = await decodeAudioData(pcmData, ctx, 24000, 1);
 
-        sourceNodeRef.current = source;
-        source.start();
-        setPlayingAudioId(msg.id);
+          const source = ctx.createBufferSource();
+          source.buffer = audioBuffer;
+          source.connect(ctx.destination);
 
-    } catch (e) {
-        console.error("Playback failed", e);
-    } finally {
-        setLoadingAudioId(null);
-    }
-  };
+          source.onended = () => {
+              setPlayingAudioId(null);
+              sourceNodeRef.current = null;
+          };
+
+          sourceNodeRef.current = source;
+          source.start();
+          setPlayingAudioId(msg.id);
+
+      } catch (e) {
+          console.error("Playback failed", e);
+      } finally {
+          setLoadingAudioId(null);
+      }
+    };
+  });
+
+  const handlePlayAudio = React.useCallback((msg: VentMessage, voiceName?: string) => {
+    return handlePlayAudioLatest.current?.(msg, voiceName);
+  }, []);
 
   // Playback Logic for Chat
   useEffect(() => {
@@ -190,49 +250,17 @@ export const VentSessionLog: React.FC<VentSessionLogProps> = ({ messages, agents
           </div>
       )}
       
-      {visibleMessages.map((msg, idx) => {
-        const agent = getAgent(msg.agentId);
-        const isRight = idx % 2 === 1; 
-        const isPlaying = playingAudioId === msg.id;
-        const isLoading = loadingAudioId === msg.id;
-
-        return (
-          <div 
-            key={msg.id} 
-            className={`flex ${isRight ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-500 fade-in group`}
-          >
-            <div className={`max-w-[85%] md:max-w-[75%] border border-gray-800 p-3 rounded-sm relative ${isRight ? 'bg-gray-900/50' : 'bg-black/80'}`}>
-               <div className="flex items-center gap-2 mb-2 border-b border-gray-800 pb-1">
-                 <div className={`w-2 h-2 rounded-full ${agent?.status === 'CRITICAL' ? 'bg-red-500' : 'bg-green-500'}`}></div>
-                 <span className={`font-bold text-xs uppercase tracking-wider ${agent?.avatarColor}`}>{agent?.name}</span>
-                 {agent?.icon && <span className="text-sm">{agent.icon}</span>}
-                 <span className="text-[10px] text-gray-500 ml-auto uppercase opacity-70">[{msg.emotion}]</span>
-                 
-                 {/* Play Button */}
-                 <button 
-                    onClick={() => handlePlayAudio(msg, agent?.voiceName)}
-                    disabled={isLoading}
-                    className={`ml-2 p-1 rounded-full border border-gray-700 hover:bg-gray-800 transition-colors ${isPlaying ? 'text-green-400 border-green-900 animate-pulse' : 'text-gray-500'}`}
-                    title="Play Voice"
-                    type="button"
-                    aria-label={`Play audio for ${agent?.name}`}
-                 >
-                    {isLoading ? (
-                        <span className="block w-3 h-3 border-2 border-gray-500 border-t-transparent rounded-full animate-spin"></span>
-                    ) : isPlaying ? (
-                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                    ) : (
-                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                    )}
-                 </button>
-               </div>
-               <div className="text-sm md:text-base text-gray-300 leading-relaxed font-mono">
-                 {msg.text}
-               </div>
-            </div>
-          </div>
-        );
-      })}
+      {visibleMessages.map((msg, idx) => (
+        <VentMessageItem
+          key={msg.id}
+          msg={msg}
+          agent={getAgent(msg.agentId)}
+          isRight={idx % 2 === 1}
+          isPlaying={playingAudioId === msg.id}
+          isLoading={loadingAudioId === msg.id}
+          onPlayAudio={handlePlayAudio}
+        />
+      ))}
       
       {/* Typing Indicator */}
       {isPlaying && visibleMessages.length < messages.length && messages.length > 0 && (
