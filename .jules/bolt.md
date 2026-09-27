@@ -1,0 +1,3 @@
+## 2023-10-27 - [List Rendering Optimization in VentSessionLog]
+**Learning:** In React components rendering a list where individual items interact with shared states (like audio playback `playingAudioId` or `loadingAudioId`), updating those shared states causes a re-render of the entire list. In `VentSessionLog.tsx`, changing who is talking or loading audio triggered a re-render for every single message in the history.
+**Action:** Extract list items into their own components and wrap them in `React.memo()`. When passing callbacks down to memoized list items, use `useCallback` combined with the "latest-ref pattern" (`useRef` + `useLayoutEffect`) to maintain a stable function reference while still accessing the freshest component state.
